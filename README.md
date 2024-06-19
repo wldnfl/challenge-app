@@ -33,4 +33,4 @@
   - 삭제
  
 ## 🧱 ERD
-![drawSQL-image-export-2024-06-19 (1)](https://github.com/lis0517/challenge-app/assets/43354156/66c845f4-5291-4fb9-bbb9-7a1263c3ff4c)
+![drawSQL-image-export-2024-06-19 (2)](https://github.com/lis0517/challenge-app/assets/43354156/0e16626a-db0c-42af-9ab0-c172425b1015)
