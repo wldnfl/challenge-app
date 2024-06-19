@@ -3,17 +3,29 @@ package com.twelve.challengeapp.service;
 import com.twelve.challengeapp.entity.RefreshToken;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface JwtService {
+
+	String extractUsername(String token);
+
+	Object extractRole(String token);
+
 	Boolean isTokenExpired(String token);
 
-	Boolean validateToken(String token, String username);
+	Boolean validateToken(String token);
+
+	Boolean isAuthorizationHeaderMissing(HttpServletRequest request);
 
 	String generateAccessToken(String username, Object role);
 
-	String generateRefreshToken(Object role);
+	String generateRefreshToken(String username, Object role);
+
+	String getAccessTokenFromRequest(HttpServletRequest request);
 
 	String getRefreshTokenFromRequest(HttpServletRequest request);
+
+	void setHeaderWithAccessToken(HttpServletResponse response, String accessToken);
 
 	void setRefreshTokenAtCookie(RefreshToken refreshToken);
 }
