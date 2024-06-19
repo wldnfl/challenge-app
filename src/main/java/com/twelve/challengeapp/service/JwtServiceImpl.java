@@ -1,17 +1,22 @@
 package com.twelve.challengeapp.service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.twelve.challengeapp.config.JwtConfig;
+import com.twelve.challengeapp.entity.RefreshToken;
 import com.twelve.challengeapp.jwt.JwtTokenProvider;
 
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -62,5 +67,20 @@ public class JwtServiceImpl implements JwtService {
 			}
 		}
 		return null;
+	}
+
+	// Refresh Token 쿠키에 저장
+	@Override
+	public void setRefreshTokenAtCookie(RefreshToken refreshToken) {
+		Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, refreshToken.getToken());
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true);
+		cookie.setMaxAge(JwtConfig.staticRefreshTokenExpirationSecond);
+		HttpServletResponse response = ((ServletRequestAttributes)Objects.requireNonNull(
+			RequestContextHolder.getRequestAttributes())).getResponse();
+
+		if (response != null) {
+			response.addCookie(cookie);
+		}
 	}
 }

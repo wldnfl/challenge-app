@@ -1,5 +1,7 @@
 package com.twelve.challengeapp.service;
 
+import com.twelve.challengeapp.entity.RefreshToken;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface JwtService {
@@ -12,4 +14,6 @@ public interface JwtService {
 	String generateRefreshToken(Object role);
 
 	String getRefreshTokenFromRequest(HttpServletRequest request);
+
+	void setRefreshTokenAtCookie(RefreshToken refreshToken);
 }
