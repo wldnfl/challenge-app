@@ -18,6 +18,11 @@ public final class JwtTokenProvider {
 		return claims.getSubject();
 	}
 
+	public static Object extractRole(String token, String authorizationKey, SecretKey secretKey) {
+		Claims claims = extractAllClaims(token, secretKey);
+		return claims.get(authorizationKey);
+	}
+
 	// 토큰에서 만료 기간 추출
 	public static Date extractExpiration(String token, SecretKey secretKey) {
 		Claims claims = extractAllClaims(token, secretKey);
@@ -29,31 +34,13 @@ public final class JwtTokenProvider {
 		return extractExpiration(token, secretKey).before(new Date(System.currentTimeMillis()));
 	}
 
-	public static Boolean validateToken(String token, String username, SecretKey secretKey) {
-		final String extractedUsername = extractUsername(token, secretKey);
-		return (extractedUsername.equals(username) && !isTokenExpired(token, secretKey));
-	}
-
-	// Access Token 생성
-	public static String generateAccessToken(String username, String authorizationKey, Object role, long expiration,
+	// Token 생성
+	public static String generateToken(String username, String authorizationKey, Object role, long expiration,
 		SecretKey secretKey) {
 
 		return Jwts.builder()
 			.claim(authorizationKey, role)
 			.setSubject(username)
-			.setIssuedAt(new Date(System.currentTimeMillis()))
-			.setExpiration(new Date(System.currentTimeMillis() + expiration))
-			.signWith(secretKey)
-			.compact();
-	}
-
-	// Refresh Token 생성
-	// subject 사용하지않음
-	public static String generateRefreshToken(String authorizationKey, Object role, long expiration,
-		SecretKey secretKey) {
-
-		return Jwts.builder()
-			.claim(authorizationKey, role)
 			.setIssuedAt(new Date(System.currentTimeMillis()))
 			.setExpiration(new Date(System.currentTimeMillis() + expiration))
 			.signWith(secretKey)
