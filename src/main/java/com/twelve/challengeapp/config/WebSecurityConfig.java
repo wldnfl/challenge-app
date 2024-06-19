@@ -14,16 +14,19 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.twelve.challengeapp.jwt.JwtAuthenticationFilter;
+import com.twelve.challengeapp.jwt.UserDetailsServiceImpl;
 import com.twelve.challengeapp.service.JwtServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+	private final UserDetailsServiceImpl userDetailsService;
 	private final JwtServiceImpl jwtService;
 
-	public WebSecurityConfig(JwtServiceImpl jwtService) {
+	public WebSecurityConfig(JwtServiceImpl jwtService, UserDetailsServiceImpl userDetailsService) {
 		this.jwtService = jwtService;
+		this.userDetailsService = userDetailsService;
 	}
 
 	@Bean
@@ -38,7 +41,7 @@ public class WebSecurityConfig {
 
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-		return new JwtAuthenticationFilter(jwtService);
+		return new JwtAuthenticationFilter(jwtService, userDetailsService);
 	}
 
 	@Bean
