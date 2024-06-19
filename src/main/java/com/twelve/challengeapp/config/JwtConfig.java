@@ -1,9 +1,11 @@
 package com.twelve.challengeapp.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 import jakarta.annotation.PostConstruct;
 
+@Configuration
 public class JwtConfig {
 	@Value("${jwt.secret.key}")
 	private String SECRET_KEY;
