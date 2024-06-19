@@ -1,7 +1,14 @@
 package com.twelve.challengeapp.exception;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +22,33 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
 	}
 
+	@ExceptionHandler(UsernameNotFoundException.class)
+	public ResponseEntity<String> handleUsernameNotFoundException(Exception ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+
 	@ExceptionHandler(TokenNotFoundException.class)
 	public ResponseEntity<String> handleTokenNotFoundException(TokenNotFoundException ex) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+
+	@ExceptionHandler(DuplicateUsernameException.class)
+	public ResponseEntity<String> handleDuplicateUsernameException(DuplicateUsernameException ex) {
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+		List<String> errors = new ArrayList<>();
+		ex.getBindingResult().getAllErrors().forEach(error -> {
+			String errorMessage = error.getDefaultMessage();
+			errors.add(errorMessage);
+		});
+
+		Map<String, Object> body = new LinkedHashMap<>();
+		body.put("status", HttpStatus.BAD_REQUEST.value());
+		body.put("errors", errors);
+
+		return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
 	}
 }

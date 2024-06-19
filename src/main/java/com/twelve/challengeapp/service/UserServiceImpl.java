@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 	public void registerUser(UserRequestDto.Register requestDto) {
 
 		if (userRepository.existsByUsername(requestDto.getUsername())) {
-			throw new DuplicateUsernameException("Already has username.");
+			throw new DuplicateUsernameException("Duplicate username.");
 		}
 
 		User user = User.builder()
