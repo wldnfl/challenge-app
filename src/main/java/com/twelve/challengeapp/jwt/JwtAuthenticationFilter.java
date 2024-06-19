@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,16 +21,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j(topic = "Jwt 검증 및 인가")
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+	private final UserDetailsServiceImpl userDetailsService;
 	private final JwtServiceImpl jwtService;
 
-	public JwtAuthenticationFilter(JwtServiceImpl jwtService) {
+	public JwtAuthenticationFilter(JwtServiceImpl jwtService, UserDetailsServiceImpl userDetailsService) {
 		this.jwtService = jwtService;
+		this.userDetailsService = userDetailsService;
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 		FilterChain filterChain) throws ServletException, IOException {
-
 		String accessToken = jwtService.getAccessTokenFromRequest(request);
 		if (accessToken != null) {
 			if (jwtService.validateToken(accessToken)) {
@@ -68,15 +70,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		return jwtService.isAuthorizationHeaderMissing(request);
 	}
 
-	private void setAuthenticationContext(String accessToken) {
-		String username = jwtService.extractUsername(accessToken);
-
-		// UserDetails userDetails = userDetailsService TODO : User 생기면 작업하기
-		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(null, null, null);
-
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-	}
-
 	private void sendAuthenticationFailureResponse(HttpServletResponse response) throws IOException {
 		// 응답 상태 코드 설정
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -93,5 +86,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		// 응답 본문을 JSON 형식으로 변환하여 출력
 		ObjectMapper objectMapper = new ObjectMapper();
 		response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+	}
+
+	private void setAuthenticationContext(String accessToken) {
+		String username = jwtService.extractUsername(accessToken);
+
+		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, "",
+			userDetails.getAuthorities());
+
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 }

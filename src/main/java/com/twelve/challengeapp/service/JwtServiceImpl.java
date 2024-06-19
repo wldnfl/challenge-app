@@ -64,7 +64,7 @@ public class JwtServiceImpl implements JwtService {
 
 	@Override
 	public Boolean isAuthorizationHeaderMissing(HttpServletRequest request) {
-		return getHeader(request) == null;
+		return request.getHeader(JwtConfig.staticHeader) == null;
 	}
 
 	// Access Token 생성
@@ -87,7 +87,7 @@ public class JwtServiceImpl implements JwtService {
 	// header에서 access token 가져오기
 	@Override
 	public String getAccessTokenFromRequest(HttpServletRequest request) {
-		String header = getHeader(request);
+		String header = request.getHeader(JwtConfig.staticHeader);
 
 		if (header.startsWith(JwtConfig.staticTokenPrefix)) {
 			return header.replace(JwtConfig.staticTokenPrefix, "");
@@ -131,9 +131,5 @@ public class JwtServiceImpl implements JwtService {
 
 	private SecretKey getSecretKey() {
 		return Keys.hmacShaKeyFor(JwtConfig.staticSecretKey.getBytes(StandardCharsets.UTF_8));
-	}
-
-	private String getHeader(HttpServletRequest request) {
-		return request.getHeader(JwtConfig.staticHeader);
 	}
 }
