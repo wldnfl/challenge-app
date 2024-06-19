@@ -1,10 +1,10 @@
-package com.twelve.challegeapp;
+package com.twelve.challengeapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ChallegeAppApplicationTests {
+class ChallengeAppApplicationTests {
 
     @Test
     void contextLoads() {

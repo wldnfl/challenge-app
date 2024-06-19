@@ -1,13 +1,13 @@
-package com.twelve.challegeapp;
+package com.twelve.challengeapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ChallegeAppApplication {
+public class ChallengeAppApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ChallegeAppApplication.class, args);
+        SpringApplication.run(ChallengeAppApplication.class, args);
     }
 
 }
