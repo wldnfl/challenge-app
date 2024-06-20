@@ -1,11 +1,11 @@
 package com.twelve.challengeapp.controller;
 
+import com.twelve.challengeapp.jwt.UserDetailsImpl;
+import com.twelve.challengeapp.util.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import com.twelve.challengeapp.dto.UserRequestDto;
 import com.twelve.challengeapp.service.UserServiceImpl;
@@ -26,6 +26,14 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequestDto.Register requestDto) {
 		userService.registerUser(requestDto);
+		return SuccessResponseFactory.ok();
+	}
+
+	@DeleteMapping
+	public ResponseEntity<SuccessResponse<Void>> withDrawl(@RequestBody @Valid UserRequestDto.Withdrawl requestDto,
+														   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+		userService.withDrawl(requestDto, userDetails);
 		return SuccessResponseFactory.ok();
 	}
 

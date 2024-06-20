@@ -56,4 +56,9 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handlePasswordMismatchException(PasswordMismatchException ex) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
 	}
+
+	@ExceptionHandler(UsernameMismatchException.class)
+	public ResponseEntity<String> handleUsernameMismatchException(UsernameMismatchException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+	}
 }

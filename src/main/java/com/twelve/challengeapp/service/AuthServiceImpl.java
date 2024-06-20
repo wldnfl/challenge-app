@@ -1,16 +1,14 @@
 package com.twelve.challengeapp.service;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.twelve.challengeapp.dto.UserRequestDto;
 import com.twelve.challengeapp.entity.RefreshToken;
 import com.twelve.challengeapp.entity.User;
+import com.twelve.challengeapp.entity.UserRole;
 import com.twelve.challengeapp.exception.PasswordMismatchException;
-import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.repository.UserRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -38,7 +36,10 @@ public class AuthServiceImpl implements AuthService {
 		User user = userRepository.findByUsername(requestDto.getUsername())
 			.orElseThrow(() -> new UsernameNotFoundException("Invalid username"));
 
-		// TODO : 탈퇴한 계정 처리?
+		//탈퇴한 계정처리
+		if(UserRole.WITHDRAWAL.equals(user.getRole())){
+			throw new IllegalArgumentException("Withdrawal user");
+		}
 
 		if (passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
 			String accessToken = jwtService.generateAccessToken(user.getUsername(), user.getRole());
