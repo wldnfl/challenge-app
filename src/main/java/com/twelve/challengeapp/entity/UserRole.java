@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum UserRole {
 
 	USER(Authority.USER),
-	ADMIN(Authority.ADMIN);
+	ADMIN(Authority.ADMIN),
+	WITHDRAWAL(Authority.WITHDRAWAL);
 
 	private final String authority;
 
@@ -17,5 +18,6 @@ public enum UserRole {
 	public static class Authority {
 		public static final String USER = "ROLE_USER";  // 사용자
 		public static final String ADMIN = "ROLE_ADMIN"; // 관리자
+		public static final String WITHDRAWAL = "ROLE_WITHDRAWAL";
 	}
 }
