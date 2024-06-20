@@ -8,11 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Table(name = "users")
 @Entity
@@ -44,4 +40,9 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private UserRole role;
+
+	//회원 탈퇴
+	public void withdraw(UserRole role) {
+		this.role = role;
+	}
 }

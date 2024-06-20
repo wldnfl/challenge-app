@@ -16,4 +16,8 @@ public class SuccessResponseFactory {
 		SuccessResponse<Void> response = new SuccessResponse<>(null, MSG_OK, HttpStatus.OK.value());
 		return ResponseEntity.ok(response);
 	}
+
+	public static ResponseEntity<Void> noContent() {
+		return ResponseEntity.noContent().build();
+	}
 }

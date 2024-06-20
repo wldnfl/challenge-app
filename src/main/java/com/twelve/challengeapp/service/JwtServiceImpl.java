@@ -113,15 +113,20 @@ public class JwtServiceImpl implements JwtService {
 
 	}
 
-	// header에서 access token 가져오기
 	@Override
-	public String getAccessTokenFromRequest(HttpServletRequest request) {
-		String header = request.getHeader(JwtConfig.staticHeader);
+	public String getAccessTokenFromHeader(String header) {
 
 		if (header.startsWith(JwtConfig.staticTokenPrefix)) {
 			return header.replace(JwtConfig.staticTokenPrefix, "");
 		}
 		return null;
+	}
+
+	// header에서 access token 가져오기
+	@Override
+	public String getAccessTokenFromRequest(HttpServletRequest request) {
+
+		return getAccessTokenFromHeader(request.getHeader(JwtConfig.staticHeader));
 	}
 
 	// cookie에서 refresh token 가져오기

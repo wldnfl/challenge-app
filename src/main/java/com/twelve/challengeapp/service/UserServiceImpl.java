@@ -1,5 +1,8 @@
 package com.twelve.challengeapp.service;
 
+import com.twelve.challengeapp.exception.PasswordMismatchException;
+import com.twelve.challengeapp.exception.UsernameMismatchException;
+import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +36,29 @@ public class UserServiceImpl implements UserService {
 			.nickname(requestDto.getNickname())
 			.introduce(requestDto.getIntroduce())
 			.email(requestDto.getEmail())
-			.role(UserRole.USER)
+			.role(requestDto.getRole())
 			.build();
 
 		userRepository.save(user);
 	}
 
+	@Override
+	//회원 탈퇴
+	public void withdraw(UserRequestDto.Withdrawal requestDto, UserDetailsImpl userDetails) {
+
+		// 요청된 사용자 이름과 현재 로그인한 사용자가 일치하는지 확인
+		if (!requestDto.getUsername().equals(userDetails.getUsername())) {
+			throw new UsernameMismatchException("Login ID does not match");
+		}
+
+		// 비밀번호 확인
+		if (!passwordEncoder.matches(requestDto.getPassword(), userDetails.getPassword())) {
+			throw new PasswordMismatchException("Passwords do not match");
+		}
+
+		User user = userDetails.getUser();
+		user.withdraw(UserRole.WITHDRAWAL);
+
+		userRepository.save(user);
+	}
 }
