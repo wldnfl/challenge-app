@@ -1,5 +1,9 @@
 package com.twelve.challengeapp.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,8 +11,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Table(name = "users")
 @Entity
@@ -41,8 +50,22 @@ public class User {
 	@Column(nullable = false)
 	private UserRole role;
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Post> posts = new ArrayList<>();
+
 	//회원 탈퇴
 	public void withdraw(UserRole role) {
 		this.role = role;
+	}
+
+	// Post 관련
+	public void addPost(Post post) {
+		posts.add(post);
+		post.setUser(this);
+	}
+
+	public void removePost(Post post) {
+		posts.remove(post);
+		post.setUser(null);
 	}
 }
