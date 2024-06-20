@@ -1,8 +1,5 @@
 package com.twelve.challengeapp.service;
 
-import com.twelve.challengeapp.exception.PasswordMismatchException;
-import com.twelve.challengeapp.exception.UsernameMismatchException;
-import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +7,9 @@ import com.twelve.challengeapp.dto.UserRequestDto;
 import com.twelve.challengeapp.entity.User;
 import com.twelve.challengeapp.entity.UserRole;
 import com.twelve.challengeapp.exception.DuplicateUsernameException;
+import com.twelve.challengeapp.exception.PasswordMismatchException;
+import com.twelve.challengeapp.exception.UsernameMismatchException;
+import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.repository.UserRepository;
 
 @Service
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 			.nickname(requestDto.getNickname())
 			.introduce(requestDto.getIntroduce())
 			.email(requestDto.getEmail())
-			.role(requestDto.getRole())
+			.role(UserRole.USER)
 			.build();
 
 		userRepository.save(user);
