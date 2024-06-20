@@ -44,4 +44,7 @@ public class UserRequestDto {
 	public static class Login extends UserInfo {
 	}
 
+	@Getter
+	public static class Withdrawl extends UserInfo {
+	}
 }

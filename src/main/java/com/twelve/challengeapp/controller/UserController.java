@@ -30,7 +30,7 @@ public class UserController {
 	}
 
 	@DeleteMapping
-	public ResponseEntity<SuccessResponse<Void>> withDrawl(@RequestBody @Valid UserRequestDto.Login requestDto,
+	public ResponseEntity<SuccessResponse<Void>> withDrawl(@RequestBody @Valid UserRequestDto.Withdrawl requestDto,
 														   @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 		userService.withDrawl(requestDto, userDetails);
