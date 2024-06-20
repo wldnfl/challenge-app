@@ -1,5 +1,6 @@
 package com.twelve.challengeapp.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import com.twelve.challengeapp.dto.UserRequestDto;
 import com.twelve.challengeapp.entity.RefreshToken;
 import com.twelve.challengeapp.entity.User;
 import com.twelve.challengeapp.exception.PasswordMismatchException;
+import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.repository.UserRepository;
 
 @Service
@@ -22,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
 	private final RefreshTokenServiceImpl refreshTokenService;
 
 	public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtServiceImpl jwtService,
-		RefreshTokenServiceImpl refreshTokenService) {
+		RefreshTokenServiceImpl refreshTokenService ) {
 
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
@@ -31,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public String loginUser(UserRequestDto.Login requestDto) {
+	public String login(UserRequestDto.Login requestDto) {
 
 		User user = userRepository.findByUsername(requestDto.getUsername())
 			.orElseThrow(() -> new UsernameNotFoundException("Invalid username"));
@@ -47,5 +49,14 @@ public class AuthServiceImpl implements AuthService {
 		} else {
 			throw new PasswordMismatchException("Invalid password");
 		}
+	}
+
+	@Override
+	public void logout(String header) {
+
+		String token = jwtService.getAccessTokenFromHeader(header);
+		String username = jwtService.extractUsername(token);
+
+		refreshTokenService.deleteRefreshToken(username);
 	}
 }

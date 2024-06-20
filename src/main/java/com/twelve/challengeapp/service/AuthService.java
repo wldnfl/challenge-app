@@ -4,6 +4,7 @@ import com.twelve.challengeapp.dto.UserRequestDto;
 
 public interface AuthService {
 
-	String loginUser(UserRequestDto.Login requestDto);
+	String login(UserRequestDto.Login requestDto);
 
+	void logout(String header);
 }
