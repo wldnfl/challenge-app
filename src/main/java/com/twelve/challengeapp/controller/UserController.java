@@ -23,7 +23,7 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@PostMapping("/register")
+	@PostMapping
 	public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequestDto.Register requestDto) {
 		userService.registerUser(requestDto);
 		return SuccessResponseFactory.ok();
