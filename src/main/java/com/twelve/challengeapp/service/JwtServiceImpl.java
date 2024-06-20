@@ -1,6 +1,7 @@
 package com.twelve.challengeapp.service;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.crypto.SecretKey;
@@ -11,6 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.twelve.challengeapp.config.JwtConfig;
 import com.twelve.challengeapp.entity.RefreshToken;
+import com.twelve.challengeapp.entity.User;
 import com.twelve.challengeapp.jwt.JwtTokenProvider;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -67,6 +69,34 @@ public class JwtServiceImpl implements JwtService {
 		return request.getHeader(JwtConfig.staticHeader) == null;
 	}
 
+	@Override
+	public RefreshToken createRefreshToken(User user) {
+
+		String token = generateRefreshToken(user.getUsername(), user.getRole());
+
+		RefreshToken refreshToken = RefreshToken.builder()
+			.username(user.getUsername())
+			.token(token)
+			.expirationAt(LocalDateTime.now().plusSeconds(JwtConfig.staticRefreshTokenExpirationSecond))
+			.build();
+
+		log.info("Create Refresh Token: " + refreshToken);
+		return refreshToken;
+	}
+
+	@Override
+	public void updateRefreshToken(RefreshToken refreshToken, User user) {
+
+		String token = generateRefreshToken(user.getUsername(), user.getRole());
+
+		log.info("Update Before: " + refreshToken.getToken() + ", " + refreshToken.getExpirationAt());
+
+		refreshToken.updateToken(token);
+		refreshToken.updateExpirationAt(LocalDateTime.now().plusSeconds(JwtConfig.staticRefreshTokenExpirationSecond));
+
+		log.info("Update After: " + refreshToken.getToken() + ", " + refreshToken.getExpirationAt());
+	}
+
 	// Access Token 생성
 	@Override
 	public String generateAccessToken(String username, Object role) {
@@ -76,8 +106,7 @@ public class JwtServiceImpl implements JwtService {
 
 	}
 
-	@Override
-	public String generateRefreshToken(String username, Object role) {
+	private String generateRefreshToken(String username, Object role) {
 
 		return JwtTokenProvider.generateToken(username, JwtConfig.staticAuthorizationKey, role,
 			JwtConfig.staticRefreshTokenExpiration, getSecretKey());
