@@ -17,4 +17,7 @@ public class SuccessResponseFactory {
 		return ResponseEntity.ok(response);
 	}
 
+	public static ResponseEntity<Void> noContent() {
+		return ResponseEntity.noContent().build();
+	}
 }
