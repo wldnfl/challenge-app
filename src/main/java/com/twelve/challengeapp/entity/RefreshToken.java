@@ -14,7 +14,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
 @Table(name = "refresh_token")
 @Entity
 @Getter
@@ -31,5 +30,16 @@ public class RefreshToken {
 	private String token;
 
 	@Column(nullable = false)
+	private String username;
+
+	@Column(nullable = false)
 	private LocalDateTime expirationAt;
+
+	public void updateToken(String token) {
+		this.token = token;
+	}
+
+	public void updateExpirationAt(LocalDateTime expirationAt) {
+		this.expirationAt = expirationAt;
+	}
 }

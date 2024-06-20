@@ -1,6 +1,7 @@
 package com.twelve.challengeapp.service;
 
 import com.twelve.challengeapp.entity.RefreshToken;
+import com.twelve.challengeapp.entity.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,9 +18,11 @@ public interface JwtService {
 
 	Boolean isAuthorizationHeaderMissing(HttpServletRequest request);
 
-	String generateAccessToken(String username, Object role);
+	RefreshToken createRefreshToken(User user);
 
-	String generateRefreshToken(String username, Object role);
+	void updateRefreshToken(RefreshToken refreshToken, User user);
+
+	String generateAccessToken(String username, Object role);
 
 	String getAccessTokenFromRequest(HttpServletRequest request);
 
