@@ -26,9 +26,6 @@ public class UserRequestDto {
 	}
 
 	@Getter
-	@Builder
-	@NoArgsConstructor(access = AccessLevel.PROTECTED)
-	@AllArgsConstructor
 	public static class Register extends UserInfo {
 
 		@NotBlank
@@ -37,6 +34,10 @@ public class UserRequestDto {
 		private String introduce;
 		@Email
 		private String email;
+	}
+
+	@Getter
+	public static class Login extends UserInfo {
 	}
 
 }
