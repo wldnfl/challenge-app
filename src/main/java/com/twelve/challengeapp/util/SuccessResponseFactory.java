@@ -8,13 +8,12 @@ public class SuccessResponseFactory {
 	private final static String MSG_OK = "The request has been successfully processed.";
 
 	public static <T> ResponseEntity<SuccessResponse<T>> ok(T data) {
-		SuccessResponse<T> response = new SuccessResponse<>(HttpStatus.OK.value(), MSG_OK, data);
+		SuccessResponse<T> response = new SuccessResponse<>(data, MSG_OK, HttpStatus.OK.value());
 		return ResponseEntity.ok(response);
 	}
 
 	public static ResponseEntity<SuccessResponse<Void>> ok() {
-		SuccessResponse<Void> response = new SuccessResponse<>(HttpStatus.OK.value(), MSG_OK, null);
+		SuccessResponse<Void> response = new SuccessResponse<>(null, MSG_OK, HttpStatus.OK.value());
 		return ResponseEntity.ok(response);
 	}
-
 }
