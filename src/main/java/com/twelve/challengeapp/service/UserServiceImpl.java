@@ -42,8 +42,9 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 	}
 
+	@Override
 	//회원 탈퇴
-	public void withDrawl(UserRequestDto.Withdrawl requestDto, UserDetailsImpl userDetails) {
+	public void withdraw(UserRequestDto.Withdrawal requestDto, UserDetailsImpl userDetails) {
 
 		// 요청된 사용자 이름과 현재 로그인한 사용자가 일치하는지 확인
 		if (!requestDto.getUsername().equals(userDetails.getUsername())) {
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		User user = userDetails.getUser();
-		user.withDrawl(UserRole.WITHDRAWAL);
+		user.withdraw(UserRole.WITHDRAWAL);
 
 		userRepository.save(user);
 	}

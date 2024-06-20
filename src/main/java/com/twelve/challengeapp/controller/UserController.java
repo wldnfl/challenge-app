@@ -2,6 +2,7 @@ package com.twelve.challengeapp.controller;
 
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.util.SuccessResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,10 +31,10 @@ public class UserController {
 	}
 
 	@DeleteMapping
-	public ResponseEntity<SuccessResponse<Void>> withDrawl(@RequestBody @Valid UserRequestDto.Withdrawl requestDto,
-														   @AuthenticationPrincipal UserDetailsImpl userDetails) {
+	public ResponseEntity<SuccessResponse<Void>> withdraw(@RequestBody @Valid UserRequestDto.Withdrawal requestDto,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-		userService.withDrawl(requestDto, userDetails);
+		userService.withdraw(requestDto, userDetails);
 		return SuccessResponseFactory.ok();
 	}
 

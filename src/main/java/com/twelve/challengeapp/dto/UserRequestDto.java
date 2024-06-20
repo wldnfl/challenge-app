@@ -45,6 +45,6 @@ public class UserRequestDto {
 	}
 
 	@Getter
-	public static class Withdrawl extends UserInfo {
+	public static class Withdrawal extends UserInfo {
 	}
 }

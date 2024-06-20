@@ -42,7 +42,7 @@ public class User {
 	private UserRole role;
 
 	//회원 탈퇴
-	public void withDrawl(UserRole role) {
+	public void withdraw(UserRole role) {
 		this.role = role;
 	}
 }
