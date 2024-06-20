@@ -61,4 +61,9 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handleUsernameMismatchException(UsernameMismatchException ex) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
 	}
+
+	@ExceptionHandler(UserWithdrawalException.class)
+	public ResponseEntity<String> handleUserWithdrawalException(UserWithdrawalException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+	}
 }
