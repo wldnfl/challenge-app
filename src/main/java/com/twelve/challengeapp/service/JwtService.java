@@ -24,6 +24,8 @@ public interface JwtService {
 
 	String generateAccessToken(String username, Object role);
 
+	String getAccessTokenFromHeader(String header);
+
 	String getAccessTokenFromRequest(HttpServletRequest request);
 
 	String getRefreshTokenFromRequest(HttpServletRequest request);

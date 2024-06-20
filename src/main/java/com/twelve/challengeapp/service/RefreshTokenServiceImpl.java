@@ -1,6 +1,7 @@
 package com.twelve.challengeapp.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.twelve.challengeapp.entity.RefreshToken;
 import com.twelve.challengeapp.entity.User;
@@ -36,5 +37,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
 			return refreshTokenRepository.save(jwtService.createRefreshToken(user));
 		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteRefreshToken(String username) {
+
+		refreshTokenRepository.deleteByUsername(username);
 	}
 }
