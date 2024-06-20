@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostResponseDto {
     private Long id;
-    private Long userId;
+    private String username;
     private String title;
     private String content;
     private LocalDateTime createdAt;
@@ -18,7 +18,7 @@ public class PostResponseDto {
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
-        this.userId = post.getUserId();
+        this.username = post.getUser().getUsername();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
