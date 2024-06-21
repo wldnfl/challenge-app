@@ -48,6 +48,14 @@ public class UserRequestDto {
 		@NotBlank
 		private String introduce;
 	}
+	//비밀 번호 수정
+	@Getter
+	public static class ChangePassword extends UserInfo {
+		@NotBlank
+		@Size(min = 8, max = 15)
+		@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]*$", message = "EditInfo must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
+		private String changePassword;
+	}
 	//회원 탈퇴
 	@Getter
 	public static class Withdrawal extends UserInfo {

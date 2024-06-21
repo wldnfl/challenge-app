@@ -31,4 +31,8 @@ public class UserPasswordRecord extends Timestamped {
 		this.user = user;
 		this.userPassword = encodedPassword;
 	}
+
+	public UserPasswordRecord(String changePassword) {
+		this.userPassword = changePassword;
+	}
 }

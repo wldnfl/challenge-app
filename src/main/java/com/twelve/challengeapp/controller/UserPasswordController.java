@@ -1,8 +1,13 @@
 package com.twelve.challengeapp.controller;
 
+import com.twelve.challengeapp.dto.UserRequestDto;
+import com.twelve.challengeapp.dto.UserResponseDto;
+import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.service.UserPasswordService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.twelve.challengeapp.util.SuccessResponseFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -12,5 +17,12 @@ public class UserPasswordController {
 
 	public UserPasswordController(UserPasswordService userPasswordService) {
 		this.userPasswordService = userPasswordService;
+	}
+
+	@PutMapping("/password")
+	public ResponseEntity<?> userPasswordChange(@RequestBody UserRequestDto.ChangePassword requestDto,
+												@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		UserResponseDto userResponseDto = userPasswordService.userPasswordChange(requestDto, userDetails);
+		return SuccessResponseFactory.ok(userResponseDto);
 	}
 }

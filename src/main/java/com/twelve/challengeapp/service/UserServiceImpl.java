@@ -9,7 +9,7 @@ import com.twelve.challengeapp.exception.DuplicateUsernameException;
 import com.twelve.challengeapp.exception.PasswordMismatchException;
 import com.twelve.challengeapp.exception.UsernameMismatchException;
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
-import com.twelve.challengeapp.repository.PasswordRepository;
+import com.twelve.challengeapp.repository.UserPasswordRepository;
 import com.twelve.challengeapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,12 +19,12 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final PasswordRepository passwordRepository;
+	private final UserPasswordRepository userPasswordRepository;
 
-	public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, PasswordRepository passwordRepository) {
+	public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserPasswordRepository userPasswordRepository) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
-		this.passwordRepository = passwordRepository;
+		this.userPasswordRepository = userPasswordRepository;
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
 		UserPasswordRecord userPasswordRecord = new UserPasswordRecord(user, passwordEncoder.encode(requestDto.getPassword()));
 		userRepository.save(user);
 		//비밀번호 저장
-		passwordRepository.save(userPasswordRecord);
+		userPasswordRepository.save(userPasswordRecord);
 	}
 	//회원 정보
 	@Override
