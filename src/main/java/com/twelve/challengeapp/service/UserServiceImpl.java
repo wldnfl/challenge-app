@@ -1,5 +1,6 @@
 package com.twelve.challengeapp.service;
 
+import com.twelve.challengeapp.dto.UserResponseDto;
 import com.twelve.challengeapp.exception.PasswordMismatchException;
 import com.twelve.challengeapp.exception.UsernameMismatchException;
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
@@ -41,8 +42,18 @@ public class UserServiceImpl implements UserService {
 
 		userRepository.save(user);
 	}
+	//회원 정보 가져오기
+	@Override
+	public UserResponseDto getUser(UserDetailsImpl userDetails) {
 
+		return new UserResponseDto(
+				userDetails.getUsername(),
+				userDetails.getNickname(),
+				userDetails.getIntroduce(),
+				userDetails.getEmail());
+	}
 	//회원 탈퇴
+	@Override
 	public void withDrawl(UserRequestDto.Withdrawl requestDto, UserDetailsImpl userDetails) {
 
 		// 요청된 사용자 이름과 현재 로그인한 사용자가 일치하는지 확인
@@ -60,4 +71,6 @@ public class UserServiceImpl implements UserService {
 
 		userRepository.save(user);
 	}
+
+
 }

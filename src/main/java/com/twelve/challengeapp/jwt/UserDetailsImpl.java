@@ -44,6 +44,18 @@ public class UserDetailsImpl implements UserDetails {
 		return user.getUsername();
 	}
 
+	public String getNickname() {
+		return user.getNickname();
+	}
+
+	public String getIntroduce() {
+		return user.getIntroduce();
+	}
+
+	public String getEmail() {
+		return user.getEmail();
+	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
@@ -63,4 +75,7 @@ public class UserDetailsImpl implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+
+
+
 }

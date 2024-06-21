@@ -1,5 +1,6 @@
 package com.twelve.challengeapp.controller;
 
+import com.twelve.challengeapp.dto.UserResponseDto;
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.util.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,14 @@ public class UserController {
 		return SuccessResponseFactory.ok();
 	}
 
+	@GetMapping
+	public ResponseEntity<?> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		UserResponseDto userInfo = userService.getUser(userDetails);
+		return SuccessResponseFactory.ok(userInfo);
+	}
+
 	@DeleteMapping
-	public ResponseEntity<SuccessResponse<Void>> withDrawl(@RequestBody @Valid UserRequestDto.Withdrawl requestDto,
+	public ResponseEntity<?> withDrawl(@RequestBody @Valid UserRequestDto.Withdrawl requestDto,
 														   @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 		userService.withDrawl(requestDto, userDetails);
