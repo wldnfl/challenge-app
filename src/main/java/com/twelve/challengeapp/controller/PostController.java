@@ -24,15 +24,15 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<?> getPost(@PathVariable Long id) {
-        PostResponseDto responseDto = postService.getPost(id);
+    public ResponseEntity<?> getPost(@PathVariable Long postId) {
+        PostResponseDto responseDto = postService.getPost(postId);
         return SuccessResponseFactory.ok(responseDto);
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long userId = userDetails.getUserId();
-        PostResponseDto responseDto = postService.updatePost(id, requestDto, userId);
+        PostResponseDto responseDto = postService.updatePost(postId, requestDto, userId);
         return SuccessResponseFactory.ok(responseDto);
     }
 
