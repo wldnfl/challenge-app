@@ -1,27 +1,24 @@
 package com.twelve.challengeapp.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.twelve.challengeapp.dto.PostRequestDto;
 import com.twelve.challengeapp.dto.PostResponseDto;
 import com.twelve.challengeapp.entity.Post;
 import com.twelve.challengeapp.entity.User;
+import com.twelve.challengeapp.exception.PostNotFoundException;
 import com.twelve.challengeapp.exception.UserNotFoundException;
 import com.twelve.challengeapp.repository.PostRepository;
 import com.twelve.challengeapp.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
 	private final PostRepository postRepository;
-
 	private final UserRepository userRepository;
 
 	@Override
@@ -39,23 +36,20 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
-	public Page<PostResponseDto> getPosts(int page) {
-		PageRequest pageRequest = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "createdAt"));
-		return postRepository.findAll(pageRequest).map(PostResponseDto::new);
+	public Page<PostResponseDto> getPosts(Pageable pageable) {
+		return postRepository.findAll(pageable).map(PostResponseDto::new);
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public PostResponseDto getPost(Long id) {
-		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+		Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
 		return new PostResponseDto(post);
 	}
 
 	@Override
 	@Transactional
 	public PostResponseDto updatePost(Long id, PostRequestDto requestDto, Long userId) {
-		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+		Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
 
 		if (!(post.getUser().getId() == userId)) {
 			throw new SecurityException("You are not authorized to update this post");
@@ -68,7 +62,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	@Transactional
 	public void deletePost(Long id, Long userId) {
-		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+		Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
 
 		if (!(post.getUser().getId() == userId)) {
 			throw new SecurityException("You are not authorized to delete this post");

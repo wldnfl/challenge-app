@@ -3,6 +3,8 @@ package com.twelve.challengeapp.entity;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
@@ -22,7 +24,7 @@ public class Timestamped {
 	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime createdAt;
 
-	@CreatedDate
+	@LastModifiedDate
 	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime updatedAt;
 }
