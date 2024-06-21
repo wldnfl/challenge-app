@@ -10,7 +10,6 @@ import com.twelve.challengeapp.exception.UserNotFoundException;
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.repository.UserPasswordRepository;
 import com.twelve.challengeapp.repository.UserRepository;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +43,7 @@ public class UserPasswordServiceImpl implements UserPasswordService{
 
 		//최근 3개가져오기
 		List<UserPasswordRecord> userPasswordRecordList = userPasswordRepository.findTop3ByUserIdOrderByCreatedAtDesc(userDetails.getUserId());
+
 		// 새 비밀번호 암호화
 		String changePasswordEncoded = passwordEncoder.encode(requestDto.getChangePassword());
 
@@ -64,6 +64,12 @@ public class UserPasswordServiceImpl implements UserPasswordService{
 		// 새로운 비밀번호 기록 저장
 		UserPasswordRecord changePasswordRecord = new UserPasswordRecord(user, changePasswordEncoded);
 		userPasswordRepository.save(changePasswordRecord);
+
+		// 가장 오래된 비밀번호 기록 삭제
+		if(userPasswordRecordList.size() >= 3){
+			UserPasswordRecord oldPassword = userPasswordRepository.findByUserIdAndCreatedAt(userDetails.getUserId(), userPasswordRecordList.get(2).getCreatedAt());
+			userPasswordRepository.delete(oldPassword);
+		}
 
 		return new UserResponseDto(
 				userDetails.getUsername(),
