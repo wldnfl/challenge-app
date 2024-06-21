@@ -1,6 +1,5 @@
 package com.twelve.challengeapp.service;
 
-import com.twelve.challengeapp.dto.CommentDto;
 import com.twelve.challengeapp.entity.Comment;
 import com.twelve.challengeapp.entity.User;
 

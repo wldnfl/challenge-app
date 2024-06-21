@@ -1,44 +1,55 @@
 package com.twelve.challengeapp.controller;
 
-import com.twelve.challengeapp.dto.CommentDto;
+import com.twelve.challengeapp.dto.CommentRequestDto;
+import com.twelve.challengeapp.dto.CommentResponseDto;
 import com.twelve.challengeapp.entity.Comment;
-import com.twelve.challengeapp.entity.User;
+import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.service.CommentService;
-import com.twelve.challengeapp.util.SuccessResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.twelve.challengeapp.util.SuccessResponseFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/posts/{post_Id}")
+@RequiredArgsConstructor
+@Slf4j
+@RequestMapping("/api/posts/{postId}")
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
+
+    private final CommentService commentService;
 
     @PostMapping("/comments")
-    public SuccessResponse<Comment> createComment(@PathVariable Long postId, @RequestBody CommentDto commentDto, @AuthenticationPrincipal User user) {
-        Comment comment = commentService.createComment(postId, commentDto.getContent(), user);
-        return new SuccessResponse<>(comment);
+    public ResponseEntity<?> createComment(@PathVariable Long postId, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Comment comment = commentService.createComment(postId, commentRequestDto.getContent(), userDetails.getUser());
+        CommentResponseDto responseDto = new CommentResponseDto(comment.getId(), comment.getContent(), comment.getUser().getUsername(), comment.getCreatedAt(), comment.getUpdatedAt());
+        return SuccessResponseFactory.ok(responseDto);
     }
 
     @PutMapping("/comments/{commentId}")
-    public SuccessResponse<Comment> updateComment(@PathVariable Long commentId, @RequestBody CommentDto commentDto, @AuthenticationPrincipal User user) {
-        Comment comment = commentService.updateComment(commentId, commentDto.getContent(), user);
-        return new SuccessResponse<>(comment);
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Comment comment = commentService.updateComment(commentId, commentRequestDto.getContent(), userDetails.getUser());
+        CommentResponseDto responseDto = new CommentResponseDto(comment.getId(), comment.getContent(), comment.getUser().getUsername(), comment.getCreatedAt(), comment.getUpdatedAt());
+        return SuccessResponseFactory.ok(responseDto);
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public SuccessResponse<Void> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal User user) {
-        commentService.deleteComment(commentId, user);
-        return new SuccessResponse<>(null);
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.deleteComment(commentId, userDetails.getUser());
+        return SuccessResponseFactory.noContent();
     }
 
-    @GetMapping
-    public SuccessResponse<List<Comment>> getCommentsByPostId(@PathVariable Long postId) {
+    @GetMapping("/comments")
+    public ResponseEntity<?> getCommentsByPostId(@PathVariable Long postId) {
         List<Comment> comments = commentService.getCommentsByPostId(postId);
-        return new SuccessResponse<>(comments);
+        List<CommentResponseDto> responseDtos = comments.stream()
+                .map(comment -> new CommentResponseDto(comment.getId(), comment.getContent(), comment.getUser().getUsername(), comment.getCreatedAt(), comment.getUpdatedAt()))
+                .collect(Collectors.toList());
+        return SuccessResponseFactory.ok(responseDtos);
     }
 }

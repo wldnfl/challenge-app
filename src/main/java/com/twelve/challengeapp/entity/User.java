@@ -29,7 +29,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	@Column(unique = true, nullable = false)
 	private String username;
@@ -56,6 +56,12 @@ public class User {
 	//회원 탈퇴
 	public void withdraw(UserRole role) {
 		this.role = role;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		User user = (User)obj;
+		return this.id.equals(user.getId());
 	}
 
 	// Post 관련
