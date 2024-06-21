@@ -2,6 +2,7 @@ package com.twelve.challengeapp.controller;
 
 import com.twelve.challengeapp.dto.UserResponseDto;
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
+import com.twelve.challengeapp.service.UserService;
 import com.twelve.challengeapp.util.SuccessResponse;
 
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,9 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/users")
 public class UserController {
 
-	private final UserServiceImpl userService;
+	private final UserService userService;
 
-	public UserController(UserServiceImpl userService) {
+	public UserController(UserService userService) {
 		this.userService = userService;
 	}
 
