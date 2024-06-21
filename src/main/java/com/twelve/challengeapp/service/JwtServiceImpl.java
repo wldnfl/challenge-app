@@ -31,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtServiceImpl implements JwtService {
 
 	private static final String REFRESH_TOKEN_COOKIE_NAME = "RefreshToken";
+	private static final String COOKIE_PATH = "/";
+	private static final int COOKIE_MAX_AGE = 0;
 
 	@Override
 	public String extractUsername(String token) {
@@ -53,13 +55,13 @@ public class JwtServiceImpl implements JwtService {
 			Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(token);
 			return true;
 		} catch (SecurityException | MalformedJwtException | SignatureException e) {
-			log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+			log.error("Invalid JWT signature.");
 		} catch (ExpiredJwtException e) {
-			log.error("Expired JWT token, 만료된 JWT token 입니다.");
+			log.error("Expired JWT token.");
 		} catch (UnsupportedJwtException e) {
-			log.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+			log.error("Unsupported JWT token.");
 		} catch (IllegalArgumentException e) {
-			log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+			log.error("JWT claims is empty.");
 		}
 		return false;
 	}
@@ -161,6 +163,21 @@ public class JwtServiceImpl implements JwtService {
 	@Override
 	public void setHeaderWithAccessToken(HttpServletResponse response, String accessToken) {
 		response.setHeader(JwtConfig.staticHeader, JwtConfig.staticTokenPrefix + accessToken);
+	}
+
+	@Override
+	public void deleteRefreshTokenAtCookie() {
+		// 덮어 쓰기
+		Cookie cookie = new Cookie(REFRESH_TOKEN_COOKIE_NAME, null);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true);
+		cookie.setMaxAge(COOKIE_MAX_AGE);
+		HttpServletResponse response = ((ServletRequestAttributes)Objects.requireNonNull(
+			RequestContextHolder.getRequestAttributes())).getResponse();
+
+		if (response != null) {
+			response.addCookie(cookie);
+		}
 	}
 
 	private SecretKey getSecretKey() {

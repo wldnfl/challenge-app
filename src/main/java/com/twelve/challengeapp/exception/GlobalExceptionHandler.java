@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -60,5 +61,15 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(UsernameMismatchException.class)
 	public ResponseEntity<String> handleUsernameMismatchException(UsernameMismatchException ex) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+	}
+
+	@ExceptionHandler(UserWithdrawalException.class)
+	public ResponseEntity<String> handleUserWithdrawalException(UserWithdrawalException ex) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+	}
+
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex){
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 	}
 }

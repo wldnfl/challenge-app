@@ -1,75 +1,79 @@
 package com.twelve.challengeapp.service;
 
-import com.twelve.challengeapp.dto.PostRequestDto;
-import com.twelve.challengeapp.dto.PostResponseDto;
-import com.twelve.challengeapp.entity.Post;
-import com.twelve.challengeapp.repository.PostRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.twelve.challengeapp.dto.PostRequestDto;
+import com.twelve.challengeapp.dto.PostResponseDto;
+import com.twelve.challengeapp.entity.Post;
+import com.twelve.challengeapp.entity.User;
+import com.twelve.challengeapp.exception.UserNotFoundException;
+import com.twelve.challengeapp.repository.PostRepository;
+import com.twelve.challengeapp.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
-    private final PostRepository postRepository;
+	private final PostRepository postRepository;
 
-    @Override
-    @Transactional
-    public PostResponseDto createPost(PostRequestDto requestDto, Long userId) {
-        Post post = Post.builder()
-                .userId(userId)
-                .title(requestDto.getTitle())
-                .content(requestDto.getContent())
-                .build();
+	private final UserRepository userRepository;
 
-        postRepository.save(post);
+	@Override
+	@Transactional
+	public PostResponseDto createPost(PostRequestDto requestDto, Long userId) {
 
-        return new PostResponseDto(post);
-    }
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Not found user."));
 
-    @Override
-    @Transactional(readOnly = true)
-    public Page<PostResponseDto> getPosts(int page) {
-        PageRequest pageRequest = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return postRepository.findAll(pageRequest).map(PostResponseDto::new);
-    }
+		Post post = Post.builder().title(requestDto.getTitle()).content(requestDto.getContent()).build();
 
-    @Override
-    @Transactional(readOnly = true)
-    public PostResponseDto getPost(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
-        return new PostResponseDto(post);
-    }
+		user.addPost(post);
+		Post savedPost = postRepository.save(post);
 
-    @Override
-    @Transactional
-    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, Long userId) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+		return new PostResponseDto(savedPost);
+	}
 
-        if (!post.getUserId().equals(userId)) {
-            throw new SecurityException("You are not authorized to update this post");
-        }
+	@Override
+	@Transactional(readOnly = true)
+	public Page<PostResponseDto> getPosts(int page) {
+		PageRequest pageRequest = PageRequest.of(page, 5, Sort.by(Sort.Direction.DESC, "createdAt"));
+		return postRepository.findAll(pageRequest).map(PostResponseDto::new);
+	}
 
-        post.update(requestDto.getTitle(), requestDto.getContent());
-        return new PostResponseDto(post);
-    }
+	@Override
+	@Transactional(readOnly = true)
+	public PostResponseDto getPost(Long id) {
+		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+		return new PostResponseDto(post);
+	}
 
-    @Override
-    @Transactional
-    public void deletePost(Long id, Long userId) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Post not found"));
+	@Override
+	@Transactional
+	public PostResponseDto updatePost(Long id, PostRequestDto requestDto, Long userId) {
+		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
-        if (!post.getUserId().equals(userId)) {
-            throw new SecurityException("You are not authorized to delete this post");
-        }
+		if (!(post.getUser().getId() == userId)) {
+			throw new SecurityException("You are not authorized to update this post");
+		}
 
-        postRepository.delete(post);
-    }
+		post.update(requestDto.getTitle(), requestDto.getContent());
+		return new PostResponseDto(post);
+	}
+
+	@Override
+	@Transactional
+	public void deletePost(Long id, Long userId) {
+		Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
+		if (!(post.getUser().getId() == userId)) {
+			throw new SecurityException("You are not authorized to delete this post");
+		}
+
+		postRepository.delete(post);
+	}
 }
