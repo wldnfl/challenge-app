@@ -51,7 +51,7 @@ public class User {
 	private UserRole role;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Post> posts = new ArrayList<>();
+	private final List<Post> posts = new ArrayList<>();
 
 	//회원 정보 수정
 	public void editInfo(String nickname, String introduce) {

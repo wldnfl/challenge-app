@@ -4,11 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 public class UserRequestDto {
 
 	@Getter
+	@SuperBuilder
 	private static class UserInfo {
 		@NotBlank
 		@Size(min = 4, max = 10)
@@ -22,6 +25,7 @@ public class UserRequestDto {
 	}
 
 	@Getter
+	@SuperBuilder
 	public static class Register extends UserInfo {
 
 		@NotBlank
@@ -33,6 +37,7 @@ public class UserRequestDto {
 	}
 
 	@Getter
+	@SuperBuilder
 	public static class Login extends UserInfo {
 	}
 	//회원 정보 수정
@@ -50,6 +55,7 @@ public class UserRequestDto {
 	}
 	//회원 탈퇴
 	@Getter
+	@SuperBuilder
 	public static class Withdrawal extends UserInfo {
 	}
 
