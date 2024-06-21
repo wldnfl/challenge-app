@@ -1,5 +1,6 @@
 package com.twelve.challengeapp.controller;
 
+import com.twelve.challengeapp.dto.UserResponseDto;
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.util.SuccessResponse;
 
@@ -28,6 +29,12 @@ public class UserController {
 	public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequestDto.Register requestDto) {
 		userService.registerUser(requestDto);
 		return SuccessResponseFactory.ok();
+	}
+
+	@GetMapping
+	public ResponseEntity<?> getUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		UserResponseDto userInfo = userService.getUser(userDetails);
+		return SuccessResponseFactory.ok(userInfo);
 	}
 
 	@DeleteMapping

@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.twelve.challengeapp.dto.UserRequestDto;
+import com.twelve.challengeapp.dto.UserResponseDto;
 import com.twelve.challengeapp.entity.User;
 import com.twelve.challengeapp.entity.UserRole;
 import com.twelve.challengeapp.exception.DuplicateUsernameException;
@@ -41,6 +42,16 @@ public class UserServiceImpl implements UserService {
 
 		userRepository.save(user);
 	}
+	//회원 정보 가져오기
+	@Override
+	public UserResponseDto getUser(UserDetailsImpl userDetails) {
+
+		return new UserResponseDto(
+				userDetails.getUsername(),
+				userDetails.getNickname(),
+				userDetails.getIntroduce(),
+				userDetails.getEmail());
+	}
 
 	@Override
 	//회원 탈퇴
@@ -61,4 +72,6 @@ public class UserServiceImpl implements UserService {
 
 		userRepository.save(user);
 	}
+
+
 }
