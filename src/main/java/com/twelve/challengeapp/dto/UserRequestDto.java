@@ -17,7 +17,7 @@ public class UserRequestDto {
 
 		@NotBlank
 		@Size(min = 8, max = 15)
-		@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]*$", message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
+		@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]*$", message = "EditInfo must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
 		private String password;
 	}
 
@@ -35,8 +35,23 @@ public class UserRequestDto {
 	@Getter
 	public static class Login extends UserInfo {
 	}
+	//회원 정보 수정
+	@Getter
+	public static class EditInfo {
 
+		@NotBlank
+		@Size(min = 8, max = 15)
+		@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]*$", message = "EditInfo must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
+		private String password;
+		@NotBlank
+		private String nickname;
+		@NotBlank
+		private String introduce;
+	}
+	//회원 탈퇴
 	@Getter
 	public static class Withdrawal extends UserInfo {
 	}
+
+
 }
