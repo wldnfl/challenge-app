@@ -53,6 +53,11 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Post> posts = new ArrayList<>();
 
+	//회원 정보 수정
+	public void editInfo(String nickname, String introduce) {
+		this.nickname = nickname;
+		this.introduce = introduce;
+	}
 	//회원 탈퇴
 	public void withdraw(UserRole role) {
 		this.role = role;
@@ -68,4 +73,6 @@ public class User {
 		posts.remove(post);
 		post.setUser(null);
 	}
+
+
 }

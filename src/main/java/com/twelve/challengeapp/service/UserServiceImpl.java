@@ -12,6 +12,7 @@ import com.twelve.challengeapp.exception.PasswordMismatchException;
 import com.twelve.challengeapp.exception.UsernameMismatchException;
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -73,5 +74,21 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 	}
 
+	@Override
+	@Transactional
+	public UserResponseDto editUser(UserRequestDto.EditInfo requestDto, UserDetailsImpl userDetails) {
+		// 비밀번호 확인
+		if (!passwordEncoder.matches(requestDto.getPassword(), userDetails.getPassword())) {
+			throw new PasswordMismatchException("Passwords do not match");
+		}
 
+		User user = userDetails.getUser();
+		user.editInfo(requestDto.getNickname(),requestDto.getIntroduce());
+
+		return new UserResponseDto(
+				userDetails.getUsername(),
+				userDetails.getNickname(),
+				userDetails.getIntroduce(),
+				userDetails.getEmail());
+	}
 }

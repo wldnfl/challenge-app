@@ -13,4 +13,5 @@ public interface UserService {
   
 	void withdraw(UserRequestDto.Withdrawal requestDto, UserDetailsImpl userDetails);
 
+	UserResponseDto editUser(UserRequestDto.EditInfo requestDto, UserDetailsImpl userDetails);
 }
