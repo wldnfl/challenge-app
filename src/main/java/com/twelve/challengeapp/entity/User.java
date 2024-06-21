@@ -58,6 +58,10 @@ public class User {
 		this.nickname = nickname;
 		this.introduce = introduce;
 	}
+	// 비밀 번호 변경
+	public void ChangePassword(String password) {
+		this.password = password;
+	}
 	//회원 탈퇴
 	public void withdraw(UserRole role) {
 		this.role = role;
@@ -79,6 +83,7 @@ public class User {
 		posts.remove(post);
 		post.setUser(null);
 	}
+
 
 
 }
