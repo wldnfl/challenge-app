@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
 		userRepository.save(user);
 	}
-	//회원 정보 가져오기
+	//회원 정보
 	@Override
 	public UserResponseDto getUser(UserDetailsImpl userDetails) {
 
@@ -53,9 +53,27 @@ public class UserServiceImpl implements UserService {
 				userDetails.getIntroduce(),
 				userDetails.getEmail());
 	}
-
+	//회원 정보 수정
 	@Override
+	public UserResponseDto editUser(UserRequestDto.EditInfo requestDto, UserDetailsImpl userDetails) {
+		// 비밀번호 확인
+		if (!passwordEncoder.matches(requestDto.getPassword(), userDetails.getPassword())) {
+			throw new PasswordMismatchException("Passwords do not match");
+		}
+
+		User user = userDetails.getUser();
+		user.editInfo(requestDto.getNickname(),requestDto.getIntroduce());
+
+		userRepository.save(user);
+
+		return new UserResponseDto(
+				userDetails.getUsername(),
+				userDetails.getNickname(),
+				userDetails.getIntroduce(),
+				userDetails.getEmail());
+	}
 	//회원 탈퇴
+	@Override
 	public void withdraw(UserRequestDto.Withdrawal requestDto, UserDetailsImpl userDetails) {
 
 		// 요청된 사용자 이름과 현재 로그인한 사용자가 일치하는지 확인
@@ -74,21 +92,5 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 	}
 
-	@Override
-	@Transactional
-	public UserResponseDto editUser(UserRequestDto.EditInfo requestDto, UserDetailsImpl userDetails) {
-		// 비밀번호 확인
-		if (!passwordEncoder.matches(requestDto.getPassword(), userDetails.getPassword())) {
-			throw new PasswordMismatchException("Passwords do not match");
-		}
 
-		User user = userDetails.getUser();
-		user.editInfo(requestDto.getNickname(),requestDto.getIntroduce());
-
-		return new UserResponseDto(
-				userDetails.getUsername(),
-				userDetails.getNickname(),
-				userDetails.getIntroduce(),
-				userDetails.getEmail());
-	}
 }

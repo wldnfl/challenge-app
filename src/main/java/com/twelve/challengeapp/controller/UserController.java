@@ -39,12 +39,14 @@ public class UserController {
 	@PutMapping
 	public ResponseEntity<?> editUser(@RequestBody @Valid UserRequestDto.EditInfo requestDto,
 										  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
 		UserResponseDto editUserInfo = userService.editUser(requestDto, userDetails);
 		return SuccessResponseFactory.ok(editUserInfo);
 	}
+
 	@DeleteMapping
 	public ResponseEntity<SuccessResponse<Void>> withdraw(@RequestBody @Valid UserRequestDto.Withdrawal requestDto,
-		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+														  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 		userService.withdraw(requestDto, userDetails);
 		return SuccessResponseFactory.ok();
