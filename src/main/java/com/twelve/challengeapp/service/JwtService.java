@@ -33,4 +33,6 @@ public interface JwtService {
 	void setHeaderWithAccessToken(HttpServletResponse response, String accessToken);
 
 	void setRefreshTokenAtCookie(RefreshToken refreshToken);
+
+	void deleteRefreshTokenAtCookie();
 }

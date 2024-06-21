@@ -10,7 +10,7 @@ public interface UserService {
 
 	//회원 정보 가져오기
 	UserResponseDto getUser(UserDetailsImpl userDetails);
+  
+	void withdraw(UserRequestDto.Withdrawal requestDto, UserDetailsImpl userDetails);
 
-	//회원 탈퇴
-	void withDrawl(UserRequestDto.Withdrawl requestDto, UserDetailsImpl userDetails);
 }

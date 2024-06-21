@@ -4,7 +4,9 @@ import com.twelve.challengeapp.dto.UserRequestDto;
 import com.twelve.challengeapp.service.AuthServiceImpl;
 import com.twelve.challengeapp.util.SuccessResponse;
 import com.twelve.challengeapp.util.SuccessResponseFactory;
+
 import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +28,7 @@ public class AuthController {
 	}
 
 	@DeleteMapping("/logout")
-	public ResponseEntity<SuccessResponse<Void>> logout(
-		@RequestHeader("Authorization") String authorizationHeader) {
+	public ResponseEntity<SuccessResponse<Void>> logout(@RequestHeader("Authorization") String authorizationHeader) {
 
 		authService.logout(authorizationHeader);
 		return SuccessResponseFactory.ok();
