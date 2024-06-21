@@ -24,8 +24,6 @@ public class CommentServiceImpl implements CommentService {
                 .postId(postId)
                 .content(content)
                 .user(user)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
 
         return commentRepository.save(comment);

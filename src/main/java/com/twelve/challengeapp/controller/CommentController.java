@@ -3,6 +3,7 @@ package com.twelve.challengeapp.controller;
 import com.twelve.challengeapp.dto.CommentRequestDto;
 import com.twelve.challengeapp.dto.CommentResponseDto;
 import com.twelve.challengeapp.entity.Comment;
+import com.twelve.challengeapp.entity.Timestamped;
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
 import com.twelve.challengeapp.service.CommentService;
 import com.twelve.challengeapp.util.SuccessResponseFactory;
