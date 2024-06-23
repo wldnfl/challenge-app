@@ -51,7 +51,7 @@ public class User {
 	private UserRole role;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Post> posts = new ArrayList<>();
+	private final List<Post> posts = new ArrayList<>();
 
 	//회원 정보 수정
 	public void editInfo(String nickname, String introduce) {
@@ -63,7 +63,7 @@ public class User {
 		this.password = password;
 	}
 	//회원 탈퇴
-	public void withdraw(UserRole role) {
+	public void updateRole(UserRole role) {
 		this.role = role;
 	}
 
