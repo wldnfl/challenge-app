@@ -4,12 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 public class UserRequestDto {
 
@@ -23,7 +19,6 @@ public class UserRequestDto {
 
 	private static final int PASSWORD_MIN = 8;
 	private static final int PASSWORD_MAX = 15;
-
 
 	@Getter
 	private static class UserInfo {
@@ -85,6 +80,21 @@ public class UserRequestDto {
 		private String introduce;
 	}
 
+	//비밀 번호 수정
+	@Getter
+	public static class ChangePassword extends UserInfo {
+		@NotBlank
+		@Size(min = PASSWORD_MIN, max = PASSWORD_MAX)
+		@Pattern(regexp = PASSWORD_REGEXP, message = PASSWORD_MSG)
+		private final String changePassword;
+
+		@Builder
+		public ChangePassword(String username, String password, String changePassword) {
+			super(username, password);
+			this.changePassword = changePassword;
+		}
+	}
+
 	//회원 탈퇴
 	@Getter
 	public static class Withdrawal extends UserInfo {
@@ -93,5 +103,4 @@ public class UserRequestDto {
 			super(username, password);
 		}
 	}
-
 }
