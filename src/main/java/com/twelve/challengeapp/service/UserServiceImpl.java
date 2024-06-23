@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		User user = userDetails.getUser();
-		user.withdraw(UserRole.WITHDRAWAL);
+		user.updateRole(UserRole.WITHDRAWAL);
 
 		userRepository.save(user);
 	}

@@ -1,9 +1,9 @@
 package com.twelve.challengeapp.entity;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
 
@@ -52,7 +52,7 @@ class UserTest {
 
 	@Test
 	void testWithdraw() {
-		user.withdraw(UserRole.WITHDRAWAL);
+		user.updateRole(UserRole.WITHDRAWAL);
 		assertEquals(UserRole.WITHDRAWAL, user.getRole());
 	}
 

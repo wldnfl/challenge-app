@@ -59,7 +59,7 @@ public class User {
 		this.introduce = introduce;
 	}
 	//회원 탈퇴
-	public void withdraw(UserRole role) {
+	public void updateRole(UserRole role) {
 		this.role = role;
 	}
 
