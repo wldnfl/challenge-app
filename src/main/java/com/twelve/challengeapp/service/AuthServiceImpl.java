@@ -8,6 +8,7 @@ import com.twelve.challengeapp.dto.UserRequestDto;
 import com.twelve.challengeapp.entity.RefreshToken;
 import com.twelve.challengeapp.entity.User;
 import com.twelve.challengeapp.entity.UserRole;
+import com.twelve.challengeapp.exception.AlreadyAdminException;
 import com.twelve.challengeapp.exception.PasswordMismatchException;
 import com.twelve.challengeapp.exception.UserWithdrawalException;
 import com.twelve.challengeapp.repository.UserRepository;
@@ -24,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
 	private final RefreshTokenServiceImpl refreshTokenService;
 
 	public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtServiceImpl jwtService,
-		RefreshTokenServiceImpl refreshTokenService ) {
+		RefreshTokenServiceImpl refreshTokenService) {
 
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
@@ -38,9 +39,14 @@ public class AuthServiceImpl implements AuthService {
 		User user = userRepository.findByUsername(requestDto.getUsername())
 			.orElseThrow(() -> new UsernameNotFoundException("Invalid username"));
 
-		//탈퇴한 계정처리
-		if(UserRole.WITHDRAWAL.equals(user.getRole())){
+		// 탈퇴한 계정처리
+		if (UserRole.WITHDRAWAL.equals(user.getRole())) {
 			throw new UserWithdrawalException("Withdrawal user");
+		}
+
+		// 삭제된 계정 처리
+		if (UserRole.DELETED.equals(user.getRole())) {
+			throw  new AlreadyAdminException("Deleted user");
 		}
 
 		if (passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {

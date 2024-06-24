@@ -103,4 +103,10 @@ public class UserRequestDto {
 			super(username, password);
 		}
 	}
+
+	@Getter
+	public static class Role {
+
+		private String role;
+	}
 }
