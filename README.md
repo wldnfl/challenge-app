@@ -256,28 +256,50 @@
         - `403 forbidden`
 </details>
 
-|기능|Method|URL|Header|Request Body|Response Body|
-|---|---|---|---|---|---|
-|회원가입|`POST`|/api/users||{<br>"username": "test1235",<br>"password": "Test1234!@",<br>"nickname": "Lee",<br>"introduce": "hi!",<br>"email":"test@example.com"<br>}|`Default Success Code`|
-|로그인|`POST`|/api/auth/login|`token`|{<br>"username": "test1235",<br>"password": "Test1234!@"<br>}|`Default Success Code`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
-|로그아웃|`DELETE`|/api/auth/logout|`token`||`Default Success Code`<br><br>`401 Unauthorized`|
-|회원탈퇴|`DELETE`|/api/users|`token`||`Default Success Code`<br><br>`401 Unauthorized`|
-|회원정보 조회|`GET`|/api/users|`token`||`Default Success Code` `User`|
-|회원정보 수정|`PUT`|/api/users/password|`token`|{<br>"nickname": "Kim",<br>"introduce" : "bye!"<br>}|`Default Success Code` `UserInfo`|
-|비밀번호 변경|`PUT`|/api/users|`token`|{<br>"currentPassword" : "Test1234!",<br>"password" : "Test5678!"<br>}|`Default Success Code`<br><br>`400 Bad Requset`<br><br>`401 Unauthorized`|
-|게시글 등록|`POST`|/api/posts|`token`|{<br>"title" : "post test",<br>"content" : "test content"<br>}|`Default Success Code`|
-|선택한 게시글 조회|`GET`|/api/posts/{postId}|||`Default Success Code` `Post`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
-|선택한 게시글 수정|`PUT`|/api/posts/{postId}|`token`|{<br>"title" : "edit post test",<br>"content" : "edit content"<br>}|`Default Success Code` `Post`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
-|선택한 게시글 삭제|`DELETE`|/api/posts/{postId}|`token`||`204 No content`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
-|전체 게시글 조회|`GET`|/api/posts?page=0&size=5&<br>sort=createdDate,desc|||`Post (page)`|
-|댓글 작성|`POST`|/api/posts/{postId}/comments|`token`|{<br>"content" : "write a comment"<br>}|`Default Success Code` `Comment`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
-|댓글 수정|`PUT`|/api/posts/{postId}/<br>comments/{commentId}|`token`|{<br>"content" : "edit comment."<br>}|`Default Success Code` `Comment`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
-|댓글 삭제|`DELETE`|/api/posts/{postId}/<br>comments/{commentId}|`token`||`204 No content`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
-|댓글 조회|`GET`|/api/posts/{postId}/comments|`token`||`Default Success Code` `Comment`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
-|사용자 전체 목록 조회|`GET`|/api/admin/users|`token`||`Default Success Code` `UserList`<br><br>`403 Forbidden`|
-|사용자 권한 수정|`PUT`|/api/admin/users/{userId}/role|`token`||`Default Success Code`<br><br>`403 Forbidden`|
-|사용자 관리자로 승격|`PUT`|/api/admin/users/{userId}/promote|`token`||`Default Success Code`<br><br>`403 Forbidden`|
-|사용자 삭제|`DELETE`|/api/admin/users/{userId}|`token`||`204 No content`<br><br>`403 Forbidden`|
+- 인증
+  
+| Title | HTTP Method | URL | Request | Response | Auth |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| `로그인` |`POST`|`/api/auth/login`|`{"username": "test1235","password": "Test1234!@"}`|`Default Success Code`<br><br>`401 Unauthorized`<br><br>`404 Not found`|`No`|
+| `로그아웃` |`DELETE`|`/api/auth/logout`| |`Default Success Code`<br><br>`401 Unauthorized`|`Yes`|
+
+- 유저
+
+| Title | HTTP Method | URL | Request | Response | Auth |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| `회원가입` |`POST`|`/api/users`| `{ "username":"test1235", "password":"Test1234!@", "nickname": "Lee", "introduce": "hi!", "email":"test@example.com" }` |`Default Success Code`|`No`|
+| `회원탈퇴` |`DELETE`|`/api/users`|| `Default Success Code`<br><br>`401 Unauthorized` |`Yes`|
+| `회원정보 조회` |`GET`|`/api/users`|| `Default Success Code` `User` |`Yes`|
+| `회원정보 수정` |`PUT`|`/api/users/password`|`{ "nickname": "Kim", "introduce" : "bye!"}` |`Default Success Code` `UserInfo`|`Yes`|
+| `비밀번호 변경` |`PUT`|`/api/users`|`{ "currentPassword" : "Test1234!", "password" : "Test5678!" }`|`Default Success Code`<br><br>`400 Bad Requset`<br><br>`401 Unauthorized`|`Yes`|
+
+- 게시물
+
+| Title | HTTP Method | URL | Request | Response | Auth |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| `게시글 등록` |`POST`|`/api/posts`|`{"title" : "post test", "content" : "test content"}`|`Default Success Code`|`Yes`|
+| `선택한 게시글 조회` |`GET`|`/api/posts/{postId}`||`Default Success Code` `Post`<br><br>`401 Unauthorized`<br><br>`404 Not found`|`No`|
+| `선택한 게시글 수정` |`PUT`|`/api/posts/{postId}`|`{ "title" : "edit post test", "content" : "edit content"}`|`Default Success Code` `Post`<br><br>`401 Unauthorized`<br><br>`404 Not found`|`Yes`|
+| `선택한 게시글 삭제` |`DELETE`|`/api/posts/{postId}`||`204 No content`<br><br>`401 Unauthorized`<br><br>`404 Not found`|`Yes`|
+| `전체 게시글 조회` |`GET`|`/api/posts?page=0&size=5&sort=createdDate,desc`||`Post (page)`|`No`|
+
+- 댓글
+
+| Title | HTTP Method | URL | Request | Response | Auth |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|`댓글 작성`|`POST`|`/api/posts/{postId}/comments`|`{"content" : "write a comment"}`|`Default Success Code` `Comment`<br><br>`401 Unauthorized`<br><br>`404 Not found`|`Yes`|
+|`댓글 수정`|`PUT`|`/api/posts/{postId}/comments/{commentId}`|`{"content" : "edit comment."}`|`Default Success Code` `Comment`<br><br>`401 Unauthorized`<br><br>`404 Not found`|`Yes`|
+|`댓글 삭제`|`DELETE`|`/api/posts/{postId}/comments/{commentId}`||`204 No content`<br><br>`401 Unauthorized`<br><br>`404 Not found`|`Yes`|
+|`댓글 조회`|`GET`|`/api/posts/{postId}/comments`||`Default Success Code` `Comment`<br><br>`401 Unauthorized`<br><br>`404 Not found`|`Yes`|
+
+- 관리자
+
+| Title | HTTP Method | URL | Request | Response | Auth |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|`사용자 전체 목록 조회`|`GET`|`/api/admin/users`||`Default Success Code` `UserList`<br><br>`403 Forbidden`|`Yes`|
+|`사용자 권한 수정`|`PUT`|`/api/admin/users/{userId}/role`||`Default Success Code`<br><br>`403 Forbidden`|`Yes`|
+|`사용자 관리자로 승격`|`PUT`|`/api/admin/users/{userId}/promote`||`Default Success Code`<br><br>`403 Forbidden`|`Yes`|
+|`사용자 삭제`|`DELETE`|`/api/admin/users/{userId}`||`204 No content`<br><br>`403 Forbidden`|`Yes`|
 
 
 ## 🧱 ERD
