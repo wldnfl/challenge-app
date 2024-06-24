@@ -2,6 +2,8 @@ package com.twelve.challengeapp.service;
 
 import java.util.List;
 
+import com.twelve.challengeapp.dto.CommentRequestDto;
+import com.twelve.challengeapp.dto.CommentResponseDto;
 import com.twelve.challengeapp.dto.PostRequestDto;
 import com.twelve.challengeapp.dto.PostResponseDto;
 import com.twelve.challengeapp.dto.UserRequestDto;
@@ -29,5 +31,11 @@ public interface AdminService {
 
 	// 게시물 삭제
 	void deletePost(Long postId);
+
+	List<CommentResponseDto> getAllComments();
+
+	CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto);
+
+	void deleteComment(Long commentId);
 
 }
