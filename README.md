@@ -11,7 +11,8 @@
 - MySQL
 
 ## 🔖 Features
-
+<details>
+  
 - 사용자 인증 기능
   - 회원가입
   - 로그인
@@ -31,6 +32,256 @@
   - 작성
   - 수정
   - 삭제
- 
+
+- 백오피스 기능
+  - 사용자 권한 관리자로 승격
+  - 사용자 권한 관리
+  - 전체 사용자 조회
+  - 사용자 삭제
+</details>
+
+## API
+
+- 모든 `API`에 대한 반환은 `Content-Type: application/json; charset=utf-8`를 기본으로 합니다.
+- 인증은 Bearer Token을 통해 진행합니다.
+
+<details>
+
+- **Response**
+    - `Post`
+    
+    ```json
+    {
+        "data": {
+            "id": 7,
+            "username": "test1234",
+            "title": "post test",
+            "content": "content test",
+            "createdAt": "2024-06-21T03:17:04.1310677",
+            "updatedAt": "2024-06-21T03:17:04.1310677"
+        }
+    }
+    ```
+    
+    - `Post (page)`
+    
+    ```json
+    {
+        "status": 200,
+        "message": "The request has been successfully processed.",
+        "data": {
+            "totalPages": 1,
+            "totalElements": 5,
+            "first": true,
+            "last": true,
+            "size": 5,
+            "content": [
+                {
+                    "id": 13,
+                    "username": "test1234",
+                    "title": "post test7!",
+                    "content": "content test7!",
+                    "createdAt": "2024-06-21T12:55:19.795803",
+                    "updatedAt": "2024-06-21T12:55:19.795803"
+                },
+                {
+                    "id": 12,
+                    "username": "test1234",
+                    "title": "post test6!",
+                    "content": "content test6!",
+                    "createdAt": "2024-06-21T12:54:57.901893",
+                    "updatedAt": "2024-06-21T12:54:57.901893"
+                },
+                {
+                    "id": 11,
+                    "username": "test1234",
+                    "title": "점심 뭐 먹지",
+                    "content": "배고픔",
+                    "createdAt": "2024-06-21T12:51:47.155775",
+                    "updatedAt": "2024-06-21T12:52:10.500887"
+                },
+                ...
+            ],
+            "number": 0,
+            "sort": {
+                "empty": false,
+                "sorted": true,
+                "unsorted": false
+            },
+            "numberOfElements": 5,
+            "pageable": {
+                "pageNumber": 0,
+                "pageSize": 5,
+                "sort": {
+                    "empty": false,
+                    "sorted": true,
+                    "unsorted": false
+                },
+                "offset": 0,
+                "paged": true,
+                "unpaged": false
+            },
+            "empty": false
+        }
+    }
+    ```
+    
+    - `User`
+    
+    ```json
+    {
+        "data": {
+            "id": 7,
+            "username": "test1234",
+            "title": "post test",
+            "content": "content test",
+            "createdAt": "2024-06-21T03:17:04.1310677",
+            "updatedAt": "2024-06-21T03:17:04.1310677"
+        }
+    }
+    ```
+    
+    ```json
+    {
+        "data": {
+            "username": "test1234",
+            "nickname": "Lee",
+            "introduce": "hi!",
+            "email": "test@example.com"
+        }
+    }
+    ```
+    
+    - UserList
+    
+    ```json
+    {
+        "data": [
+            {
+                "username": "admin",
+                "nickname": "admin",
+                "introduce": "admin account",
+                "email": "admin@example.com"
+            },
+            {
+                "username": "test1234",
+                "nickname": "Lee",
+                "introduce": "hi!",
+                "email": "test@example.com"
+            },
+            {
+                "username": "test1235",
+                "nickname": "Lee",
+                "introduce": "hi!",
+                "email": "test@example.com"
+            },
+            {
+                "username": "test1236",
+                "nickname": "Lee",
+                "introduce": "hi!",
+                "email": "test@example.com"
+            },
+            ...
+        ],
+        "message": "The request has been successfully processed.",
+        "status": 200
+    }
+    ```
+    
+    - `Comment`
+    
+    ```json
+    {
+        "data": {
+            "id": 3,
+            "content": "테스트1",
+            "username": "test1234",
+            "createdAt": "2024-06-21T10:06:02.7847837",
+            "updatedAt": "2024-06-21T10:06:02.7847837"
+        },
+        "message": "Success",
+        "status": 200
+    }
+    ```
+    
+    - `Comments`
+    
+    ```json
+    {
+        "data": [
+            {
+                "id": 1,
+                "content": "테스트1",
+                "username": "test1234",
+                "createdAt": "2024-06-21T03:45:58.049485",
+                "updatedAt": "2024-06-21T03:45:58.049485"
+            },
+            {
+                "id": 2,
+                "content": "테스트1",
+                "username": "test1234",
+                "createdAt": "2024-06-21T10:03:26.974083",
+                "updatedAt": "2024-06-21T10:03:26.974083"
+            },
+            {
+                "id": 3,
+                "content": "테스트1",
+                "username": "test1234",
+                "createdAt": "2024-06-21T10:06:02.784784",
+                "updatedAt": "2024-06-21T10:06:02.784784"
+            }
+        ],
+        "message": "Success",
+        "status": 200
+    }
+    ```
+    
+    - `Default Success Code`
+    
+    ```json
+    {
+        "status": 200,
+        "message": "The request has been successfully processed.",
+        "data": null
+    }
+    ```
+    
+    - `204 No conent`
+    
+    - 대표적인 에러 코드
+        - `401 for Unauthorized requests`
+        - `400 for Bad requests`
+        - `404 for Not found requests`
+        - `409 for Confict error requests`
+        - `403 forbidden`
+</details>
+
+|기능|Method|URL|Header|Request Body|Response Body|
+|---|---|---|---|---|---|
+|회원가입|`POST`|/api/users||{<br>"username": "test1235",<br>"password": "Test1234!@",<br>"nickname": "Lee",<br>"introduce": "hi!",<br>"email":"test@example.com"<br>}|`Default Success Code`|
+|로그인|`POST`|/api/auth/login|`token`|{<br>"username": "test1235",<br>"password": "Test1234!@"<br>}|`Default Success Code`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
+|로그아웃|`DELETE`|/api/auth/logout|`token`||`Default Success Code`<br><br>`401 Unauthorized`|
+|회원탈퇴|`DELETE`|/api/users|`token`||`Default Success Code`<br><br>`401 Unauthorized`|
+|회원정보 조회|`GET`|/api/users|`token`||`Default Success Code` `User`|
+|회원정보 수정|`PUT`|/api/users/password|`token`|{<br>"nickname": "Kim",<br>"introduce" : "bye!"<br>}|`Default Success Code` `UserInfo`|
+|비밀번호 변경|`PUT`|/api/users|`token`|{<br>"currentPassword" : "Test1234!",<br>"password" : "Test5678!"<br>}|`Default Success Code`<br><br>`400 Bad Requset`<br><br>`401 Unauthorized`|
+|게시글 등록|`POST`|/api/posts|`token`|{<br>"title" : "post test",<br>"content" : "test content"<br>}|`Default Success Code`|
+|선택한 게시글 조회|`GET`|/api/posts/{postId}|||`Default Success Code` `Post`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
+|선택한 게시글 수정|`PUT`|/api/posts/{postId}|`token`|{<br>"title" : "edit post test",<br>"content" : "edit content"<br>}|`Default Success Code` `Post`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
+|선택한 게시글 삭제|`DELETE`|/api/posts/{postId}|`token`||`204 No content`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
+|전체 게시글 조회|`GET`|/api/posts?page=0&size=5&<br>sort=createdDate,desc|||`Post (page)`|
+|댓글 작성|`POST`|/api/posts/{postId}/comments|`token`|{<br>"content" : "write a comment"<br>}|`Default Success Code` `Comment`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
+|댓글 수정|`PUT`|/api/posts/{postId}/<br>comments/{commentId}|`token`|{<br>"content" : "edit comment."<br>}|`Default Success Code` `Comment`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
+|댓글 삭제|`DELETE`|/api/posts/{postId}/<br>comments/{commentId}|`token`||`204 No content`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
+|댓글 조회|`GET`|/api/posts/{postId}/comments|`token`||`Default Success Code` `Comment`<br><br>`401 Unauthorized`<br><br>`404 Not found`|
+|사용자 전체 목록 조회|`GET`|/api/admin/users|`token`||`Default Success Code` `UserList`<br><br>`403 Forbidden`|
+|사용자 권한 수정|`PUT`|/api/admin/users/{userId}/role|`token`||`Default Success Code`<br><br>`403 Forbidden`|
+|사용자 관리자로 승격|`PUT`|/api/admin/users/{userId}/promote|`token`||`Default Success Code`<br><br>`403 Forbidden`|
+|사용자 삭제|`DELETE`|/api/admin/users/{userId}|`token`||`204 No content`<br><br>`403 Forbidden`|
+
+
 ## 🧱 ERD
-![drawSQL-image-export-2024-06-19 (2)](https://github.com/lis0517/challenge-app/assets/43354156/0e16626a-db0c-42af-9ab0-c172425b1015)
+![drawSQL-image-export-2024-06-24](https://github.com/lis0517/challenge-app/assets/43354156/db9f0c53-2ede-4020-9e87-9220f55dd992)
+
+
+
