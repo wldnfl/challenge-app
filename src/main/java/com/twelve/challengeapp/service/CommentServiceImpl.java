@@ -10,8 +10,8 @@ import com.twelve.challengeapp.dto.CommentResponseDto;
 import com.twelve.challengeapp.entity.Comment;
 import com.twelve.challengeapp.entity.Post;
 import com.twelve.challengeapp.entity.User;
+import com.twelve.challengeapp.exception.CommentNotFoundException;
 import com.twelve.challengeapp.exception.PostNotFoundException;
-import com.twelve.challengeapp.exception.ResourceNotFoundException;
 import com.twelve.challengeapp.exception.UnauthorizedException;
 import com.twelve.challengeapp.exception.UserNotFoundException;
 import com.twelve.challengeapp.repository.CommentRepository;
@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
 	@Transactional
 	public CommentResponseDto updateComment(Long commentId, String content, User user) {
 		Comment comment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+			.orElseThrow(() -> new CommentNotFoundException("Comment not found"));
 		if (!comment.getUser().equals(user)) {
 			throw new UnauthorizedException("You are not authorized to update this comment");
 		}
@@ -66,7 +66,7 @@ public class CommentServiceImpl implements CommentService {
 		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found."));
 
 		Comment comment = commentRepository.findById(commentId)
-			.orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+			.orElseThrow(() -> new CommentNotFoundException("Comment not found"));
 
 		if (!comment.getUser().equals(user)) {
 			throw new UnauthorizedException("You are not authorized to delete this comment");
