@@ -302,7 +302,7 @@
 |`사용자 권한 수정`|`PUT`|`/api/admin/users/{userId}/role`||`Default Success Code`<br><br>`403 Forbidden`|`Yes`|
 |`사용자 관리자로 승격`|`PUT`|`/api/admin/users/{userId}/promote`||`Default Success Code`<br><br>`403 Forbidden`|`Yes`|
 |`사용자 삭제`|`DELETE`|`/api/admin/users/{userId}`||`204 No content`<br><br>`403 Forbidden`|`Yes`|
-|`게시글 전체 목록 조회`|`GET`|`/api/admin/users/{userId}`||`Default Success Code` `PostList`<br><br>`403 Forbidden`|`Yes`|
+|`게시글 전체 목록 조회`|`GET`|`/api/admin/posts`||`Default Success Code` `PostList`<br><br>`403 Forbidden`|`Yes`|
 |`게시글 수정`|`PUT`|`/api/admin/posts/{postId}`||`Default Success Code` `Post`<br><br>`403 Forbidden`|`Yes`|
 |`게시글 삭제`|`DELETE`|`/api/admin/posts/{postId}`||`204 No content`<br><br>`403 Forbidden`|`Yes`|
 |`댓글 전체 목록 조회`|`GET`|`/api/admin/comments`||`Default Success Code` `Comments`<br><br>`403 Forbidden`|`Yes`|
