@@ -79,15 +79,23 @@ public class PostTest {
 
     @Test
     void testEquals() {
-        Post samePost = Post.builder().id(POST_ID).title(TITLE).content(CONTENT).build();
-        samePost.setUser(user); // 동일한 User 객체 설정
+        // 동일한 속성을 가진 두 개의 서로 다른 Post 객체 생성
+        Post samePost1 = Post.builder().id(POST_ID).title(TITLE).content(CONTENT).build();
+        samePost1.setUser(user);
 
+        Post samePost2 = Post.builder().id(POST_ID).title(TITLE).content(CONTENT).build();
+        samePost2.setUser(user);
+
+        // 다른 속성을 가진 Post 객체 생성
         User differentUser = User.builder().id(2L).username("otheruser").password("otherpassword").build();
         Post differentPost = Post.builder().id(2L).title("Different Title").content("Different Content").build();
-        differentPost.setUser(differentUser); // 다른 User 객체 설정
+        differentPost.setUser(differentUser);
 
-        assertEquals(samePost, samePost); // 동일한 객체와 비교, 객체 자신과의 비교는 항상 참
-        assertNotEquals(samePost, differentPost); // 다른 User 객체 갖고 있으므로 동등 X
+        // 동일한 속성을 가진 객체 비교
+        assertEquals(samePost1, samePost2);
+
+        // 다른 속성을 가진 객체 비교
+        assertNotEquals(samePost1, differentPost);
     }
 
     @Test
