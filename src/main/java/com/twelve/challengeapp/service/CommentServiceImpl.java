@@ -1,60 +1,87 @@
 package com.twelve.challengeapp.service;
 
-import com.twelve.challengeapp.entity.Comment;
-import com.twelve.challengeapp.entity.User;
-import com.twelve.challengeapp.exception.ResourceNotFoundException;
-import com.twelve.challengeapp.exception.UnauthorizedException;
-import com.twelve.challengeapp.repository.CommentRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.twelve.challengeapp.dto.CommentResponseDto;
+import com.twelve.challengeapp.entity.Comment;
+import com.twelve.challengeapp.entity.Post;
+import com.twelve.challengeapp.entity.User;
+import com.twelve.challengeapp.exception.PostNotFoundException;
+import com.twelve.challengeapp.exception.ResourceNotFoundException;
+import com.twelve.challengeapp.exception.UnauthorizedException;
+import com.twelve.challengeapp.exception.UserNotFoundException;
+import com.twelve.challengeapp.repository.CommentRepository;
+import com.twelve.challengeapp.repository.PostRepository;
+import com.twelve.challengeapp.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentRepository commentRepository;
+	private final CommentRepository commentRepository;
+	private final PostRepository postRepository;
+	private final UserRepository userRepository;
 
-    @Override
-    public Comment createComment(Long postId, String content, User user) {
-        Comment comment = Comment.builder()
-                .postId(postId)
-                .content(content)
-                .user(user)
-                .build();
+	@Override
+	@Transactional
+	public CommentResponseDto createComment(Long postId, String content, Long userId) {
 
-        return commentRepository.save(comment);
-    }
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found."));
 
-    @Override
-    @Transactional
-    public Comment updateComment(Long commentId, String content, User user) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
-        if (!comment.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You are not authorized to update this comment");
-        }
+		Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post not found."));
 
-        comment.update(content);
-        return comment;
-    }
+		Comment comment = Comment.builder().content(content).user(user).build();
 
-    @Override
-    @Transactional
-    public void deleteComment(Long commentId, User user) {
-        Comment comment =  commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
-        if (!comment.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You are not authorized to delete this comment");
-        }
-        commentRepository.delete(comment);
-    }
+		user.addComment(comment);
+		post.addComment(comment);
 
-    @Override
-    public List<Comment> getCommentsByPostId(Long postId) {
-        return commentRepository.findByPostId(postId);
-    }
+		commentRepository.flush();
+
+		return new CommentResponseDto(comment);
+	}
+
+	@Override
+	@Transactional
+	public CommentResponseDto updateComment(Long commentId, String content, User user) {
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+		if (!comment.getUser().equals(user)) {
+			throw new UnauthorizedException("You are not authorized to update this comment");
+		}
+
+		comment.update(content);
+
+		return new CommentResponseDto(comment);
+	}
+
+	@Override
+	@Transactional
+	public void deleteComment(Long commentId, Long userId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found."));
+
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(() -> new ResourceNotFoundException("Comment not found"));
+
+		if (!comment.getUser().equals(user)) {
+			throw new UnauthorizedException("You are not authorized to delete this comment");
+		}
+
+		Post post = comment.getPost();
+		user.removeComment(comment);
+		post.removeComment(comment);
+	}
+
+	@Override
+	public List<CommentResponseDto> getCommentsByPostId(Long postId) {
+		return commentRepository.findByPostId(postId)
+			.stream()
+			.map(CommentResponseDto::new)
+			.collect(Collectors.toList());
+	}
 }

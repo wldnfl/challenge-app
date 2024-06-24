@@ -20,16 +20,25 @@ public class Comment extends Timestamped{
     private Long id;
 
     @Column(nullable = false)
-    private Long postId; // 게시물 ID
-
-    @Column(nullable = false)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+
     public void update(String content) {
         this.content = content;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 }

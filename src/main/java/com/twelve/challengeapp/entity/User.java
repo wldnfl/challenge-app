@@ -53,6 +53,12 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<Post> posts = new ArrayList<>();
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<UserPasswordRecord> passwordRecords = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<Comment> comments = new ArrayList<>();
+
 	//회원 정보 수정
 	public void editInfo(String nickname, String introduce) {
 		this.nickname = nickname;
@@ -84,6 +90,24 @@ public class User {
 		post.setUser(null);
 	}
 
+	public void addPasswordRecord(UserPasswordRecord record) {
+		this.passwordRecords.add(record);
+		record.setUser(this);
+	}
 
+	public void removePasswordRecord(UserPasswordRecord record) {
+		this.passwordRecords.remove(record);
+		record.setUser(null);
+	}
+
+	public void addComment(Comment comment) {
+		this.comments.add(comment);
+		comment.setUser(this);
+	}
+
+	public void removeComment(Comment comment) {
+		this.comments.remove(comment);
+		comment.setUser(null);
+	}
 
 }

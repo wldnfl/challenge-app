@@ -1,5 +1,12 @@
 package com.twelve.challengeapp.service;
 
+import java.util.Objects;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.twelve.challengeapp.dto.PostRequestDto;
 import com.twelve.challengeapp.dto.PostResponseDto;
 import com.twelve.challengeapp.entity.Post;
@@ -8,11 +15,8 @@ import com.twelve.challengeapp.exception.PostNotFoundException;
 import com.twelve.challengeapp.exception.UserNotFoundException;
 import com.twelve.challengeapp.repository.PostRepository;
 import com.twelve.challengeapp.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +29,14 @@ public class PostServiceImpl implements PostService {
 	@Transactional
 	public PostResponseDto createPost(PostRequestDto requestDto, Long userId) {
 
-		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Not found user."));
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found."));
 
 		Post post = Post.builder().title(requestDto.getTitle()).content(requestDto.getContent()).build();
 
 		user.addPost(post);
-		Post savedPost = postRepository.save(post);
 
-		return new PostResponseDto(savedPost);
+		postRepository.flush();
+		return new PostResponseDto(post);
 	}
 
 	@Override
@@ -51,7 +55,7 @@ public class PostServiceImpl implements PostService {
 	public PostResponseDto updatePost(Long id, PostRequestDto requestDto, Long userId) {
 		Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
 
-		if (!(post.getUser().getId() == userId)) {
+		if (!(Objects.equals(post.getUser().getId(), userId))) {
 			throw new SecurityException("You are not authorized to update this post");
 		}
 
@@ -62,12 +66,14 @@ public class PostServiceImpl implements PostService {
 	@Override
 	@Transactional
 	public void deletePost(Long id, Long userId) {
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found."));
+
 		Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
 
-		if (!(post.getUser().getId() == userId)) {
+		if (!(Objects.equals(post.getUser().getId(), user.getId()))) {
 			throw new SecurityException("You are not authorized to delete this post");
 		}
 
-		postRepository.delete(post);
+		user.removePost(post);
 	}
 }
