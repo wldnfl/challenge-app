@@ -1,7 +1,5 @@
 package com.twelve.challengeapp.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.twelve.challengeapp.dto.CommentResponseDto;
+import com.twelve.challengeapp.dto.CommentRequestDto;
 import com.twelve.challengeapp.dto.PostRequestDto;
-import com.twelve.challengeapp.dto.PostResponseDto;
 import com.twelve.challengeapp.dto.UserRequestDto;
-import com.twelve.challengeapp.dto.UserResponseDto;
 import com.twelve.challengeapp.service.AdminService;
 import com.twelve.challengeapp.util.SuccessResponseFactory;
 
@@ -63,6 +59,22 @@ public class AdminController {
 	@DeleteMapping("/posts/{postId}")
 	public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
 		adminService.deletePost(postId);
+		return SuccessResponseFactory.noContent();
+	}
+
+	@GetMapping("/comments")
+	public ResponseEntity<?> getAllComment() {
+		return SuccessResponseFactory.ok(adminService.getAllComments());
+	}
+
+	@PutMapping("/comments/{commentId}")
+	public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto requestDto) {
+		return SuccessResponseFactory.ok(adminService.updateComment(commentId, requestDto));
+	}
+
+	@DeleteMapping("/comments/{commentId}")
+	public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
+		adminService.deleteComment(commentId);
 		return SuccessResponseFactory.noContent();
 	}
 
