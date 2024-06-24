@@ -2,6 +2,7 @@ package com.twelve.challengeapp.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -23,42 +24,63 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Post extends Timestamped {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private String title;
-	private String content;
+    private String title;
+    private String content;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
-	@Builder
-	public Post(String title, String content) {
-		this.title = title;
-		this.content = content;
-	}
+    @Builder
+    public Post(Long id, String title, String content) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+    }
 
-	public void update(String title, String content) {
-		this.title = title;
-		this.content = content;
-	}
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 
-	void setUser(User user) {
-		this.user = user;
-	}
+    void setUser(User user) {
+        this.user = user;
+        if (user != null) {
+            user.getPosts().add(this);
+        }
+    }
 
-	public void addComment(Comment comment) {
-		this.comments.add(comment);
-		comment.setPost(this);
-	}
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.setPost(this);
+    }
 
-	public void removeComment(Comment comment) {
-		this.comments.remove(comment);
-		comment.setPost(null);
-	}
+    public void removeComment(Comment comment) {
+        this.comments.remove(comment);
+        comment.setPost(null);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Post post = (Post) obj;
+        return Objects.equals(id, post.id) &&
+                Objects.equals(title, post.title) &&
+                Objects.equals(content, post.content) &&
+                Objects.equals(user, post.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, content, user);
+    }
+
 }
