@@ -56,6 +56,7 @@ public class WebSecurityConfig {
 			authorizeHttpRequests
 				.requestMatchers(HttpMethod.POST,"/api/users/**").permitAll() //POST 함수를 사용하는 /api/users/** 요청은 모두 허가
 				.requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
+				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated());
 
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
