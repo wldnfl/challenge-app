@@ -42,6 +42,8 @@
 
 ## API
 
+[Postman 명세서로 이동](https://documenter.getpostman.com/view/34878744/2sA3XY5xPn)
+
 - 모든 `API`에 대한 반환은 `Content-Type: application/json; charset=utf-8`를 기본으로 합니다.
 - 인증은 Bearer Token을 통해 진행합니다.
 
@@ -300,10 +302,15 @@
 |`사용자 권한 수정`|`PUT`|`/api/admin/users/{userId}/role`||`Default Success Code`<br><br>`403 Forbidden`|`Yes`|
 |`사용자 관리자로 승격`|`PUT`|`/api/admin/users/{userId}/promote`||`Default Success Code`<br><br>`403 Forbidden`|`Yes`|
 |`사용자 삭제`|`DELETE`|`/api/admin/users/{userId}`||`204 No content`<br><br>`403 Forbidden`|`Yes`|
+|`게시글 전체 목록 조회`|`GET`|`/api/admin/users/{userId}`||`Default Success Code` `PostList`<br><br>`403 Forbidden`|`Yes`|
+|`게시글 수정`|`PUT`|`/api/admin/posts/{postId}`||`Default Success Code` `Post`<br><br>`403 Forbidden`|`Yes`|
+|`게시글 삭제`|`DELETE`|`/api/admin/posts/{postId}`||`204 No content`<br><br>`403 Forbidden`|`Yes`|
+|`댓글 전체 목록 조회`|`GET`|`/api/admin/comments`||`Default Success Code` `Comments`<br><br>`403 Forbidden`|`Yes`|
+|`댓글 수정`|`PUT`|`/api/admin/posts/{postId}/comments/{commentId}`||`Default Success Code` `Comment`<br><br>`403 Forbidden`|`Yes`|
+|`댓글 삭제`|`DELETE`|`/api/admin/posts/{postId}/comments/{commentId}`||`204 No content`<br><br>`403 Forbidden`|`Yes`|
 
 
 ## 🧱 ERD
 ![drawSQL-image-export-2024-06-24](https://github.com/lis0517/challenge-app/assets/43354156/db9f0c53-2ede-4020-9e87-9220f55dd992)
-
 
 
