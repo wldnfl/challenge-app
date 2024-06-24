@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,9 +24,11 @@ import com.twelve.challengeapp.dto.UserResponseDto;
 import com.twelve.challengeapp.entity.User;
 import com.twelve.challengeapp.entity.UserRole;
 import com.twelve.challengeapp.jwt.UserDetailsImpl;
+import com.twelve.challengeapp.service.UserPasswordService;
 import com.twelve.challengeapp.service.UserService;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(
+	controllers = {UserController.class, UserPasswordController.class})
 @Import(TestConfig.class)
 class UserControllerTest {
 
@@ -44,13 +47,15 @@ class UserControllerTest {
 
 	@MockBean
 	private UserService userService;
-
+	@MockBean
+	private UserPasswordService userPasswordService;
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	private UserRequestDto.Register registerDto;
 	private UserRequestDto.EditInfo editDto;
 	private UserRequestDto.Withdrawal withdrawalDto;
+	private UserRequestDto.ChangePassword changePasswordDto;
 	private UserResponseDto userResponseDto;
 	private User user;
 	private UserDetailsImpl userDetails;
@@ -84,6 +89,12 @@ class UserControllerTest {
 			.build();
 
 		withdrawalDto = UserRequestDto.Withdrawal.builder().username(TEST_USERNAME).password(TEST_PASSWORD).build();
+
+		changePasswordDto = UserRequestDto.ChangePassword.builder()
+			.username(TEST_USERNAME)
+			.password(TEST_PASSWORD)
+			.changePassword(NEW_PASSWORD)
+			.build();
 
 		userResponseDto = new UserResponseDto(TEST_USERNAME, TEST_NICKNAME, TEST_INTRO, TEST_EMAIL);
 	}
@@ -161,5 +172,31 @@ class UserControllerTest {
 			.andExpect(jsonPath("$.status").value(200));
 
 		verify(userService).withdraw(any(UserRequestDto.Withdrawal.class), any(UserDetailsImpl.class));
+	}
+
+	@Test
+	@DisplayName("비밀번호 수정")
+	void Change_Password_Success() throws Exception {
+		// Given
+		UserResponseDto userResponseDto = new UserResponseDto(TEST_USERNAME, TEST_NICKNAME, TEST_INTRO,
+			TEST_EMAIL);
+		when(userPasswordService.userPasswordChange(any(UserRequestDto.ChangePassword.class),
+			any(UserDetailsImpl.class))).thenReturn(
+			userResponseDto);
+
+		// When
+		ResultActions resultActions = mockMvc.perform(put("/api/users/password").with(user(userDetails))
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(changePasswordDto)));
+
+		// Then
+		resultActions.andExpect(status().isOk())
+			.andExpect(jsonPath("$.data.username").value(TEST_USERNAME))
+			.andExpect(jsonPath("$.data.nickname").value(TEST_NICKNAME))
+			.andExpect(jsonPath("$.data.introduce").value(TEST_INTRO))
+			.andExpect(jsonPath("$.data.email").value(TEST_EMAIL));
+
+		verify(userPasswordService).userPasswordChange(any(UserRequestDto.ChangePassword.class),
+			any(UserDetailsImpl.class));
 	}
 }
