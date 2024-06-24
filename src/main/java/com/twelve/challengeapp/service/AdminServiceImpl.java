@@ -6,13 +6,16 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.twelve.challengeapp.dto.PostRequestDto;
+import com.twelve.challengeapp.dto.PostResponseDto;
 import com.twelve.challengeapp.dto.UserRequestDto;
 import com.twelve.challengeapp.dto.UserResponseDto;
+import com.twelve.challengeapp.entity.Post;
 import com.twelve.challengeapp.entity.User;
 import com.twelve.challengeapp.entity.UserRole;
 import com.twelve.challengeapp.exception.AlreadyAdminException;
+import com.twelve.challengeapp.exception.PostNotFoundException;
 import com.twelve.challengeapp.exception.UserNotFoundException;
-import com.twelve.challengeapp.repository.CommentRepository;
 import com.twelve.challengeapp.repository.PostRepository;
 import com.twelve.challengeapp.repository.UserRepository;
 
@@ -21,13 +24,10 @@ public class AdminServiceImpl implements AdminService {
 
 	private final UserRepository userRepository;
 	private final PostRepository postRepository;
-	private final CommentRepository commentRepository;
 
-	public AdminServiceImpl(UserRepository userRepository, PostRepository postRepository,
-		CommentRepository commentRepository) {
+	public AdminServiceImpl(UserRepository userRepository, PostRepository postRepository) {
 		this.userRepository = userRepository;
 		this.postRepository = postRepository;
-		this.commentRepository = commentRepository;
 	}
 
 	@Override
@@ -66,5 +66,30 @@ public class AdminServiceImpl implements AdminService {
 
 		// post, comment 상태는 유지
 		user.updateRole(UserRole.DELETED);
+	}
+
+	@Override
+	public List<PostResponseDto> getAllPosts() {
+		return postRepository.findAll().stream().map(PostResponseDto::new).collect(Collectors.toList());
+	}
+
+	@Override
+	@Transactional
+	public PostResponseDto updatePost(Long postId, PostRequestDto postRequestDto) {
+		Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post not found"));
+		post.update(postRequestDto.getTitle(), postRequestDto.getContent());
+		return new PostResponseDto(post);
+	}
+
+	@Override
+	@Transactional
+	public void deletePost(Long postId) {
+		Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post not found"));
+
+		Long userId = post.getUser().getId();
+		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+		user.removePost(post);
+		postRepository.delete(post);
 	}
 }

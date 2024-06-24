@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.twelve.challengeapp.dto.CommentResponseDto;
+import com.twelve.challengeapp.dto.PostRequestDto;
+import com.twelve.challengeapp.dto.PostResponseDto;
 import com.twelve.challengeapp.dto.UserRequestDto;
 import com.twelve.challengeapp.dto.UserResponseDto;
 import com.twelve.challengeapp.service.AdminService;
@@ -28,14 +31,12 @@ public class AdminController {
 
 	@GetMapping("/users")
 	public ResponseEntity<?> getAllUsers() {
-		List<UserResponseDto> responseDtoList = adminService.getAllUsers();
-		return SuccessResponseFactory.ok(responseDtoList);
+		return SuccessResponseFactory.ok(adminService.getAllUsers());
 	}
 
 	@PutMapping("/users/{userId}/role")
 	public ResponseEntity<?> updateUserRole(@PathVariable Long userId, @RequestBody UserRequestDto.Role role) {
-		UserResponseDto userResponseDto = adminService.updateUserRole(userId, role);
-		return SuccessResponseFactory.ok(userResponseDto);
+		return SuccessResponseFactory.ok(adminService.updateUserRole(userId, role));
 	}
 
 	@DeleteMapping("/users/{userId}")
@@ -45,8 +46,24 @@ public class AdminController {
 	}
 
 	@PutMapping("/users/{userId}/promote")
-	public ResponseEntity<UserResponseDto> promoteToAdmin(@PathVariable Long userId) {
-		return ResponseEntity.ok(adminService.promoteToAdmin(userId));
+	public ResponseEntity<?> promoteToAdmin(@PathVariable Long userId) {
+		return SuccessResponseFactory.ok(adminService.promoteToAdmin(userId));
+	}
+
+	@GetMapping("/posts")
+	public ResponseEntity<?> getAllPosts() {
+		return SuccessResponseFactory.ok(adminService.getAllPosts());
+	}
+
+	@PutMapping("/posts/{postId}")
+	public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto postRequestDto) {
+		return SuccessResponseFactory.ok(adminService.updatePost(postId, postRequestDto));
+	}
+
+	@DeleteMapping("/posts/{postId}")
+	public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+		adminService.deletePost(postId);
+		return SuccessResponseFactory.noContent();
 	}
 
 }
