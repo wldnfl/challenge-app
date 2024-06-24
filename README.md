@@ -272,8 +272,8 @@
 | `회원가입` |`POST`|`/api/users`| `{ "username":"test1235", "password":"Test1234!@", "nickname": "Lee", "introduce": "hi!", "email":"test@example.com" }` |`Default Success Code`|`No`|
 | `회원탈퇴` |`DELETE`|`/api/users`|| `Default Success Code`<br><br>`401 Unauthorized` |`Yes`|
 | `회원정보 조회` |`GET`|`/api/users`|| `Default Success Code` `User` |`Yes`|
-| `회원정보 수정` |`PUT`|`/api/users/password`|`{ "nickname": "Kim", "introduce" : "bye!"}` |`Default Success Code` `UserInfo`|`Yes`|
-| `비밀번호 변경` |`PUT`|`/api/users`|`{ "currentPassword" : "Test1234!", "password" : "Test5678!" }`|`Default Success Code`<br><br>`400 Bad Requset`<br><br>`401 Unauthorized`|`Yes`|
+| `회원정보 수정` |`PUT`|`/api/users`|`{ "nickname": "Kim", "introduce" : "bye!"}` |`Default Success Code` `UserInfo`|`Yes`|
+| `비밀번호 변경` |`PUT`|`/api/users/password`|`{ "currentPassword" : "Test1234!", "password" : "Test5678!" }`|`Default Success Code`<br><br>`400 Bad Requset`<br><br>`401 Unauthorized`|`Yes`|
 
 - 게시물
 
