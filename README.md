@@ -306,8 +306,8 @@
 |`게시글 수정`|`PUT`|`/api/admin/posts/{postId}`||`Default Success Code` `Post`<br><br>`403 Forbidden`|`Yes`|
 |`게시글 삭제`|`DELETE`|`/api/admin/posts/{postId}`||`204 No content`<br><br>`403 Forbidden`|`Yes`|
 |`댓글 전체 목록 조회`|`GET`|`/api/admin/comments`||`Default Success Code` `Comments`<br><br>`403 Forbidden`|`Yes`|
-|`댓글 수정`|`PUT`|`/api/admin/posts/{postId}/comments/{commentId}`||`Default Success Code` `Comment`<br><br>`403 Forbidden`|`Yes`|
-|`댓글 삭제`|`DELETE`|`/api/admin/posts/{postId}/comments/{commentId}`||`204 No content`<br><br>`403 Forbidden`|`Yes`|
+|`댓글 수정`|`PUT`|`/api/admin/comments/{commentId}`||`Default Success Code` `Comment`<br><br>`403 Forbidden`|`Yes`|
+|`댓글 삭제`|`DELETE`|`/api/admin/comments/{commentId}`||`204 No content`<br><br>`403 Forbidden`|`Yes`|
 
 
 ## 🧱 ERD
