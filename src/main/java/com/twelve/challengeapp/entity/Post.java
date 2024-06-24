@@ -74,12 +74,13 @@ public class Post extends Timestamped {
         Post post = (Post) obj;
         return Objects.equals(id, post.id) &&
                 Objects.equals(title, post.title) &&
-                Objects.equals(content, post.content);
+                Objects.equals(content, post.content) &&
+                Objects.equals(user, post.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, content);
+        return Objects.hash(id, title, content, user);
     }
 
 }
