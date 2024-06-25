@@ -12,6 +12,7 @@ import com.twelve.challengeapp.entity.Post;
 import com.twelve.challengeapp.entity.User;
 import com.twelve.challengeapp.exception.CommentNotFoundException;
 import com.twelve.challengeapp.exception.PostNotFoundException;
+import com.twelve.challengeapp.exception.SelfCommentException;
 import com.twelve.challengeapp.exception.UnauthorizedException;
 import com.twelve.challengeapp.exception.UserNotFoundException;
 import com.twelve.challengeapp.repository.CommentRepository;
@@ -35,6 +36,10 @@ public class CommentServiceImpl implements CommentService {
 		User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found."));
 
 		Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException("Post not found."));
+
+		if (post.getUser().equals(user)) {
+			throw new SelfCommentException("Comments on your own post are not allowed.");
+		}
 
 		Comment comment = Comment.builder().content(content).user(user).build();
 
