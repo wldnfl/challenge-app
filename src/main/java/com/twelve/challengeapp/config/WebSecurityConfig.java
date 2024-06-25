@@ -10,11 +10,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.twelve.challengeapp.jwt.JwtAuthenticationFilter;
 import com.twelve.challengeapp.jwt.UserDetailsServiceImpl;
+import com.twelve.challengeapp.service.CustomOAuth2UserServiceImpl;
 import com.twelve.challengeapp.service.JwtServiceImpl;
 
 @Configuration
@@ -23,10 +24,14 @@ public class WebSecurityConfig {
 
 	private final UserDetailsServiceImpl userDetailsService;
 	private final JwtServiceImpl jwtService;
+	private final CustomOAuth2UserServiceImpl customOAuth2UserService;
 
-	public WebSecurityConfig(JwtServiceImpl jwtService, UserDetailsServiceImpl userDetailsService) {
-		this.jwtService = jwtService;
+	public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, JwtServiceImpl jwtService,
+		CustomOAuth2UserServiceImpl customOAuth2UserService) {
+		
 		this.userDetailsService = userDetailsService;
+		this.jwtService = jwtService;
+		this.customOAuth2UserService = customOAuth2UserService;
 	}
 
 	@Bean
@@ -47,19 +52,41 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-		http.csrf((csrf) -> csrf.disable());
+		//csrf disable
+		http
+			.csrf((auth) -> auth.disable());
 
-		http.sessionManagement(
-			(sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		//From 로그인 방식 disable
+		http
+			.formLogin((auth) -> auth.disable());
+
+		//HTTP Basic 인증 방식 disable
+		http
+			.httpBasic((auth) -> auth.disable());
+
+		//JWTFilter 추가
+		http
+			.addFilterAfter(new JwtAuthenticationFilter(jwtService, userDetailsService),
+				OAuth2LoginAuthenticationFilter.class);
+
+		//oauth2
+		http
+			.oauth2Login((oauth2) -> oauth2
+				.userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+					.userService(customOAuth2UserService))
+			);
+
+		//세션 설정 : STATELESS
+		http
+			.sessionManagement((session) -> session
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
 		http.authorizeHttpRequests((authorizeHttpRequests) ->
 			authorizeHttpRequests
-				.requestMatchers(HttpMethod.POST,"/api/users/**").permitAll() //POST 함수를 사용하는 /api/users/** 요청은 모두 허가
-				.requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/users/**").permitAll() //POST 함수를 사용하는 /api/users/** 요청은 모두 허가
+				.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated());
-
-		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
