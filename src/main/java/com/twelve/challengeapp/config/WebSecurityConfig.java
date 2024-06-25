@@ -83,8 +83,9 @@ public class WebSecurityConfig {
 
 		http.authorizeHttpRequests((authorizeHttpRequests) ->
 			authorizeHttpRequests
-				.requestMatchers(HttpMethod.POST, "/api/users/**").permitAll() //POST 함수를 사용하는 /api/users/** 요청은 모두 허가
-				.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+        .requestMatchers(HttpMethod.POST,"/api/users/**").permitAll() //POST 함수를 사용하는 /api/users/** 요청은 모두 허가
+				.requestMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
+				.requestMatchers(HttpMethod.GET,"/api/posts/**").permitAll()
 				.requestMatchers("/api/admin/**").hasRole("ADMIN")
 				.anyRequest().authenticated());
 

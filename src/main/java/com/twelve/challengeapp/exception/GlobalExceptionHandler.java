@@ -86,4 +86,9 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handleCommentNotFoundException(CommentNotFoundException ex) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 	}
+
+	@ExceptionHandler(SelfCommentException.class)
+	public ResponseEntity<String> handleSelfCommentException(SelfCommentException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
 }

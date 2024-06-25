@@ -41,7 +41,11 @@ public class AdminServiceImpl implements AdminService {
 
 	@Override
 	public List<UserResponseDto> getAllUsers() {
-		return userRepository.findAll().stream().map(UserResponseDto::new).collect(Collectors.toList());
+		return userRepository.findAll()
+			.stream()
+			.filter(user -> user.getRole() != UserRole.ADMIN)
+			.map(UserResponseDto::new)
+			.collect(Collectors.toList());
 	}
 
 	@Override
