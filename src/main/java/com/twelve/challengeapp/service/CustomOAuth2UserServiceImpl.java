@@ -21,7 +21,6 @@ import com.twelve.challengeapp.repository.UserRepository;
 public class CustomOAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
 	private final UserRepository userRepository;
-	;
 
 	public CustomOAuth2UserServiceImpl(UserRepository userRepository) {
 		this.userRepository = userRepository;
