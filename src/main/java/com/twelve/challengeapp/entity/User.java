@@ -107,7 +107,7 @@ public class User {
 
 	public void removeComment(Comment comment) {
 		this.comments.remove(comment);
-		comment.setUser(null);
+		comment.setUser(this);
 	}
 
 }

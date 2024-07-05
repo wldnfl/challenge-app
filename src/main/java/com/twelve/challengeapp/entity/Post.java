@@ -1,25 +1,19 @@
 package com.twelve.challengeapp.entity;
 
-import java.util.*;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "post")
+import java.util.*;
+
 @Entity
+@Table(name = "post")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Post extends Timestamped {
 
     @Id
@@ -36,11 +30,14 @@ public class Post extends Timestamped {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @Builder
-    public Post(Long id, String title, String content) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
+
+    @Column(name = "like_count")
+    private int likeCount; // 좋아요 개수 나타내는 필드
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 
     public void update(String title, String content) {
@@ -65,19 +62,17 @@ public class Post extends Timestamped {
         comment.setPost(null);
     }
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Like> likes = new HashSet<>();
-
-    public int getLikeCount() {
-        return likes.size();
-    }
-
-    public boolean addLike(User user) {
-        return likes.add(new Like(user, this));
+    public void addLike(User user) {
+        this.postLikes.add(new PostLike(user, this));
+        this.likeCount++; // 좋아요 추가 시 좋아요 개수 증가
     }
 
     public boolean removeLike(User user) {
-        return likes.removeIf(like -> like.getUser().equals(user));
+        boolean removed = postLikes.removeIf(like -> like.getUser().equals(user));
+        if (removed) {
+            this.likeCount--; // 좋아요 삭제 시 좋아요 개수 감소
+        }
+        return removed;
     }
 
     @Override
