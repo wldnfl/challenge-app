@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Table(name = "comment")
@@ -40,5 +42,20 @@ public class Comment extends Timestamped{
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Like> likes = new HashSet<>();
+
+    public int getLikeCount() {
+        return likes.size();
+    }
+
+    public boolean addLike(User user) {
+        return likes.add(new Like(user, this));
+    }
+
+    public boolean removeLike(User user) {
+        return likes.removeIf(like -> like.getUser().equals(user));
     }
 }
