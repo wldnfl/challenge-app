@@ -1,8 +1,8 @@
 package com.twelve.challengeapp.repository;
 
+import com.twelve.challengeapp.entity.Post;
 import com.twelve.challengeapp.entity.PostLike;
 import com.twelve.challengeapp.entity.User;
-import com.twelve.challengeapp.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -3,7 +3,9 @@ package com.twelve.challengeapp.service;
 import java.util.Objects;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,5 +77,13 @@ public class PostServiceImpl implements PostService {
 		}
 
 		user.removePost(post);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Page<PostResponseDto> getLikedPostsByUserId(Long userId, int page) {
+		Pageable pageable = PageRequest.of(page, 5, Sort.by("createdAt").descending());
+		Page<Post> likedPosts = postRepository.findLikedPostsByUserId(userId, pageable);
+		return likedPosts.map(PostResponseDto::new);
 	}
 }

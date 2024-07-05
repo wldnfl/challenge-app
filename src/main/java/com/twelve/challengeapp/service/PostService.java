@@ -16,4 +16,6 @@ public interface PostService {
 	PostResponseDto updatePost(Long id, PostRequestDto requestDto, Long userId);
 
 	void deletePost(Long id, Long userId);
+
+	Page<PostResponseDto> getLikedPostsByUserId(Long userId, int page);
 }

@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PostLikeService {
@@ -44,12 +46,11 @@ public class PostLikeService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("게시물을 찾을 수 없습니다"));
 
-        postLikeRepository.findByUserAndPost(user, post)
-                .ifPresent(postLike -> {
-                    postLikeRepository.delete(postLike);
-                    post.setLikeCount(post.getLikeCount() - 1);
-                    postRepository.save(post);
-                });
+        Optional<PostLike> postLike = postLikeRepository.findByUserAndPost(user, post);
+        if (postLike.isPresent()) {
+            postLikeRepository.delete(postLike.get()); // Optional에서 PostLike 엔티티를 얻어서 삭제
+            post.setLikeCount(post.getLikeCount() - 1);
+            postRepository.save(post);
+        }
     }
 }
-
