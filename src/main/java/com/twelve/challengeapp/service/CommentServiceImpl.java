@@ -3,6 +3,10 @@ package com.twelve.challengeapp.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.twelve.challengeapp.repository.CommentLikeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,7 @@ public class CommentServiceImpl implements CommentService {
 	private final CommentRepository commentRepository;
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
+	private final CommentLikeRepository commentLikeRepository;
 
 	@Override
 	@Transactional
@@ -88,5 +93,15 @@ public class CommentServiceImpl implements CommentService {
 			.stream()
 			.map(CommentResponseDto::new)
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public Page<CommentResponseDto> getLikedComments(Long userId, Pageable pageable) {
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException("User not found."));
+
+		Page<Comment> likedComments = commentRepository.findLikedCommentsByUser(user, pageable);
+
+		return likedComments.map(CommentResponseDto::new);
 	}
 }
